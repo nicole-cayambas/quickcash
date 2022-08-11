@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import PrimaryLayout from './layouts/PrimaryLayout';
+import PrimaryLayout from './layouts/PrimaryLayout.jsx';
 import '../css/app.css'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -17,7 +17,9 @@ const darkTheme = createTheme({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider 
+    theme={darkTheme}
+    >
         <CssBaseline />
         <BrowserRouter>
             <PrimaryLayout />

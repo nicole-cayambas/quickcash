@@ -16,5 +16,8 @@
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.3.0",
         "vite": "^3.0.0"
+    },
+    "dependencies": {
+        "@mui/icons-material": "^5.8.4"
     }
 }
