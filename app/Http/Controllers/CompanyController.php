@@ -18,6 +18,10 @@ class CompanyController extends Controller
         //
     }
 
+    public function method() {
+        return 'hello ';
+    }
+
     /**
      * Show the form for creating a new resource.
      *

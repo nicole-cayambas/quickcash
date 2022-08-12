@@ -15,7 +15,15 @@ class LoanController extends Controller
      */
     public function index()
     {
-        //
+
+    }
+
+    public function test()
+    {
+        $loan = Loan::find(1);
+        // dd($loan);
+
+        return $loan->id;
     }
 
     /**

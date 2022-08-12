@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\LoanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 //     // return data
 // });
 
+Route::get('/test', [CompanyController::class, 'method']);
+
 Route::any('/{any}', function(){
     return view('main');
 })->where('any', '.*');
+

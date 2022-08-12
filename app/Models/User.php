@@ -18,9 +18,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'birth_date',
         'email',
         'password',
+        // 'company_id', //FOREIGN KEY 1. not fillable, just writing it down for later
+        // 'account_id', //FOREIGN KEY 2. not fillable, just writing it down for later
     ];
 
     /**
@@ -41,4 +45,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function account() {
+        return $this->hasOne(Account::class);
+    }
+
+    public function company() {
+        return $this->hasOne(Company::class);
+    }
 }

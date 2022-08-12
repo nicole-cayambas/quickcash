@@ -3,12 +3,13 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Login from './auth/Login';
 import Receivables from './Receivables';
-import Loan from './Loan';
+import Loan from './Loan/Loan';
 import Amortization from './Amortization';
 import Companies from './Companies';
 import Payrolls from './Payrolls';
 import Admins from './Admins';
 import Employees from './Employees';
+import CreateLoan from './Loan/CreateLoan';
 
 export default function(props){
   return <React.Fragment>
@@ -21,9 +22,10 @@ export default function(props){
           <Route path="payroll-officers" element={< Payrolls /> } />
           <Route path="admins" element={< Admins /> } />
           <Route path="employees" element={< Employees /> } />
-          <Route path="loan" element={<Loan />} /> // change to something like "/loans/id"
+          {/* <Route path="loan" element={<Loan />} />  */}
           {/* <Route path="amortization" element={<Amortization />} /> // change to something like "/loans/id/amortization" */} //no route needed pala
           <Route path="login" element={<Login />} />
+          {/* <Route path="loantest" element={<CreateLoan />} /> */}
       </Routes>
   </React.Fragment>
 }

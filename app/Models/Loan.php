@@ -9,13 +9,26 @@ class Loan extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'amount' => 'required, numeric',
-        // 'loan_date' => 'required, datetime', //I think we can use created_at for this
-        'amortizations' => 'required, double',
-        'percentage' => 'required, double',
-        'total_interest_rate' => 'required, double',
-        'total_interest' => 'required, double', //to continue
 
+    protected $fillable = [
+        'amount',
+        'loan_date',
+        'amortizations',
+        'percentage',
+        'total_interest_rate',
+        
+        // 'total_interest', // do we need this? this can be computed from the other fields
+        // 'total_amount', // need? can be computed
+        // 'monthly', // need? can be computed
+
+        // 'status' //we can use Spatie for this. laterz
     ];
+
+    public function company() {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function account() {
+        return $this->belongsTo(Account::class);
+    }
 }

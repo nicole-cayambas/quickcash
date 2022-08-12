@@ -17,7 +17,11 @@ class LoanFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'amount' => $this->faker->numberBetween(100, 1000),
+            'loan_date' => $this->faker->dateTimeBetween('-1 years', 'now'),
+            'amortizations' => $this->faker->numberBetween(1, 12),
+            'percentage' => $this->faker->numberBetween(1, 100),
+            'total_interest_rate' => $this->faker->numberBetween(1, 100),
         ];
     }
 }

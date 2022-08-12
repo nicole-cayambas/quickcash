@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('account_id')->constrained('accounts');
+            $table->decimal('amount', 10, 2);
+            $table->datetime('loan_date');
+            $table->integer('amortizations');
+            $table->decimal('percentage', 10, 2);
+            $table->decimal('total_interest_rate', 10, 2);
             $table->timestamps();
         });
     }
