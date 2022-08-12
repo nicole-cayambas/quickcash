@@ -25,19 +25,19 @@ class DatabaseSeeder extends Seeder
         //     'password' => bcrypt('secret'),
         // ]);
 
-        \App\Models\Loan::factory()->count(10)->create([
-            'company_id' => fake()->numberBetween(1, 10),
-            'account_id' => fake()->numberBetween(1, 10),
-            'amount' => fake()->numberBetween(10000, 20000),
-            'amortizations' => fake()->numberBetween(1, 10),
-            'percentage' => fake()->numberBetween(1, 10),
-            'total_interest_rate' => fake()->numberBetween(1, 10),
-        ]);
-
-        // $this->call([
-        //     AccountSeeder::class,
-        //     CompanySeeder::class,
-        //     LoanSeeder::class,
+        // \App\Models\Loan::factory()->count(10)->create([
+        //     'company_id' => fake()->numberBetween(1, 10),
+        //     'account_id' => fake()->numberBetween(1, 10),
+        //     'amount' => fake()->numberBetween(10000, 20000),
+        //     'amortizations' => fake()->numberBetween(1, 10),
+        //     'percentage' => fake()->numberBetween(1, 10),
+        //     'total_interest_rate' => fake()->numberBetween(1, 10),
         // ]);
+
+        $this->call([
+            AccountSeeder::class,
+            CompanySeeder::class,
+            LoanSeeder::class,
+        ]);
     }
 }
