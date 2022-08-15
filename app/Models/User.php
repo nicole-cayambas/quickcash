@@ -23,8 +23,6 @@ class User extends Authenticatable
         'birth_date',
         'email',
         'password',
-        // 'company_id', //FOREIGN KEY 1. not fillable, just writing it down for later
-        // 'account_id', //FOREIGN KEY 2. not fillable, just writing it down for later
     ];
 
     /**

@@ -1,8 +1,32 @@
 import { Stack, Button } from '@mui/material';
+import axios from 'axios';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function(){
+
+  // TO DO:
+
+  // if(localStorage.getItem('user')){
+  //   console.log('here')
+  //   const user = JSON.parse(localStorage.getItem('user'))
+  //   const headers = {
+  //     accept: 'application/json',
+  //     authorization: `Bearer ${user.token}`
+  //   }
+  // }
+  // const handleOnClick = () => {
+  //   axios.post('/api/logout', {
+  //     headers: headers
+  //   }).then(() => {
+  //     localStorage.removeItem('user')
+  //     window.location.href = '/'
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  // }
+  
+
   return <Stack spacing={1}>
     <Button component={Link} to="/">Home</Button>
 
@@ -24,6 +48,8 @@ export default function(){
     {/* for owner, admin, payrolls, employee(for themselves only) */}
     <Button component={Link} to="/loans">Loans</Button> 
     
+    <Button component={Link} to="/signup">Sign Up</Button>
     <Button component={Link} to="/login">Login</Button>
+    {/* <Button onClick={handleOnClick}>Logout</Button> */}
   </Stack>
 }
