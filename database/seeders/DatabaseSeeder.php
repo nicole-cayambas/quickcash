@@ -4,9 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\AccountSeeder;
-use Database\Seeders\CompanySeeder;
-use Database\Seeders\LoanSeeder;
+use Database\Factories\AccountFactory;
+use Database\Factories\CompanyFactory;
+use Database\Factories\LoanFactory;
+use Database\Factories\UserFactory;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,27 +19,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        //     'password' => bcrypt('secret'),
-        // ]);
+        UserFactory::new()->count(1)->create();
 
-        // \App\Models\Loan::factory()->count(10)->create([
-        //     'company_id' => fake()->numberBetween(1, 10),
-        //     'account_id' => fake()->numberBetween(1, 10),
-        //     'amount' => fake()->numberBetween(10000, 20000),
-        //     'amortizations' => fake()->numberBetween(1, 10),
-        //     'percentage' => fake()->numberBetween(1, 10),
-        //     'total_interest_rate' => fake()->numberBetween(1, 10),
-        // ]);
-
-        $this->call([
-            AccountSeeder::class,
-            CompanySeeder::class,
-            LoanSeeder::class,
-        ]);
+        AccountFactory::new()->count(10)->create();
+        CompanyFactory::new()->count(10)->create();
+        LoanFactory::new()->count(10)->create();
     }
 }
