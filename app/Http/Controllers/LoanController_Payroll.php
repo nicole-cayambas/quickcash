@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Loan;
+use App\Models\Company;
 
 
-class LoanController_Admin extends Controller
+class LoanController_Payroll extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,9 @@ class LoanController_Admin extends Controller
      */
     public function index()
     {
-        return response()->json(Loan::all(), 200);
+        // untested
+        $loans = auth()->user()->company->loans()->get();
+        return response()->json($loans, 200);
     }
 
     /**
@@ -26,17 +29,18 @@ class LoanController_Admin extends Controller
      */
     public function store(Request $request)
     {
+        // untested
         $request->validate([
             'amount' => 'required|numeric',
             'loan_date' => 'required|date|before_or_equal:today',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
             'total_interest_rate' => 'required|numeric|between:0,100',
-            'company_id' => 'required|exists:companies,id',
-            'account_id' => 'required|exists:accounts,id',
         ]);
-        $loan = Loan::create($request->all());
-        $loan->setStatus('Pending');
+        $loan = $request->user()->company->loans()->create($request->all());
+        if($request->status){
+            $loan->setStatus($request->status);
+        } else $loan->setStatus('Pending');
         $loan->save();
         return response()->json($loan, 201);
     }
@@ -49,7 +53,9 @@ class LoanController_Admin extends Controller
      */
     public function show($id)
     {
-        return Loan::findOrFail($id);
+        //untested
+        $loan = auth()->user()->company->loans()->findOrFail($id);
+        return response()->json($loan, 200);
     }
 
     /**
@@ -61,18 +67,21 @@ class LoanController_Admin extends Controller
      */
     public function update(Request $request, $id)
     {
+        //untested
         $request->validate([
             'amount' => 'sometimes|required|numeric',
             'loan_date' => 'sometimes|required|date|before_or_equal:today',
             'amortizations' => 'sometimes|required|numeric',
             'percentage' => 'sometimes|required|numeric|between:0,100',
             'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
-            'company_id' => 'sometimes|required|exists:companies,id',
-            'account_id' => 'sometimes|required|exists:accounts,id',
         ]);
 
-        $loan = Loan::findOrFail($id);
+        $loan = auth()->user()->company->loans()->findOrFail($id);
         $loan->update($request->all());
+        if($request->status) {
+            $loan->setStatus($request->status);
+        }
+        $loan->save();
         return response()->json($loan, 200);
     }
 
@@ -84,10 +93,8 @@ class LoanController_Admin extends Controller
      */
     public function destroy($id)
     {
-        Loan::findOrFail($id)->delete();
+        // untested
+        auth()->user()->company->loans()->delete();
         return response()->json('Loan deleted.', 204);
     }
-
-
-    
 }

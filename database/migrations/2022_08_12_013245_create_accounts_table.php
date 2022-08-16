@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('company_id')->constrained('companies');
             $table->decimal('balance', 10, 2);
             $table->decimal('capital', 10, 2);
             $table->timestamps();

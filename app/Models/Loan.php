@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\ModelStatus\HasStatuses;
+
 
 class Loan extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStatuses;
 
 
     protected $fillable = [
@@ -16,12 +18,7 @@ class Loan extends Model
         'amortizations',
         'percentage',
         'total_interest_rate',
-        
-        // 'total_interest', // do we need this? this can be computed from the other fields
-        // 'total_amount', // need? can be computed
-        // 'monthly', // need? can be computed
-
-        // 'status' //we can use Spatie for this. laterz
+        'company_id',
     ];
 
     public function company() {

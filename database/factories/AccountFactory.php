@@ -19,6 +19,7 @@ class AccountFactory extends Factory
         return [
             // 'name' => $this->faker->name,
             'user_id' => $this->faker->numberBetween(1, 10),
+            'company_id' => $this->faker->numberBetween(1, 10),
             'balance' => $this->faker->numberBetween(100, 1000),
             'capital' => $this->faker->numberBetween(100, 1000),
         ];

@@ -54,5 +54,7 @@ class DatabaseSeeder extends Seeder
         $user2->assignRole('Administrator');
         $user3->assignRole('Payroll_Officer');
         $user4->assignRole('Employee');
+
+        // $this->call(StatusSeeder::class);
     }
 }

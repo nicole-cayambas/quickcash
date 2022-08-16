@@ -115,10 +115,5 @@ class RoleAndPermissionSeeder extends Seeder
             'view-own-loan'
         ]);
 
-
-        /* ASSIGN ROLES TO USERS */
-
-        $user = \App\Models\User::find(1);
-        $user->assignRole($ownerRole);
     }
 }
