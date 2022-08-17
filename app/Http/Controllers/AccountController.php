@@ -14,18 +14,24 @@ class AccountController extends Controller
      */
     public function index()
     {
-        //
+        if(auth()->user()->hasRole('Payroll_Officer')){
+            return response()->json(auth()->user()->company->accounts()->get(), 200);
+        }
+
+        return response()->json(Account::all()->groupBy('company_id'), 200);
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function showOne()
     {
-        //
+        $account = auth()->user()->account;
+        return response()->json($account, 200);
     }
 
     /**
@@ -36,11 +42,11 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        if(auth()->user()->hasRole('Employee')){
-            $account = auth()->user()->account;
-        } else $account = Account::findOrFail($id);
+        if(auth()->user()->hasRole('Payroll_Officer')){
+            return response()->json(auth()->user()->company->accounts()->findOrFail($id), 200);
+        } 
 
-        return response()->json($account, 200);
+        return response()->json(Account::findOrFail($id), 200);
     }
 
     /**
@@ -52,7 +58,12 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'capital' => 'sometimes|required|numeric',
+        ]);
+        $account = Account::findOrFail($id);
+        $account->update($validatedData);
+        return response()->json($account, 200);
     }
 
     /**

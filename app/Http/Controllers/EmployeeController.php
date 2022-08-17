@@ -50,6 +50,8 @@ class EmployeeController extends Controller
             $user->company()->associate(auth()->user()->company);
         }
 
+        $user->assignRole('Employee');
+
         return response()->json($user, 201);
     }
 
@@ -133,6 +135,11 @@ class EmployeeController extends Controller
         $employee = auth()->user()->company->users()->findOrFail($id);
         $employee->is_verified = true;
         $employee->save();
+        $employee->account()->create([
+            'company_id' => auth()->user()->company->id,
+            'balance' => 0,
+            'capital' => 0
+        ]);
         return response()->json($employee, 200);
     }
 }

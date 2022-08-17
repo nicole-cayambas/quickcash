@@ -19,6 +19,7 @@ class Loan extends Model
         'percentage',
         'total_interest_rate',
         'company_id',
+        'account_id',
     ];
 
     public function company() {

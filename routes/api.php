@@ -13,28 +13,37 @@ use App\Http\Controllers\ReceivableController;
 use App\Http\Controllers\AuthController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('user', function (Request $request) { return $request->user(); });
+    Route::get('user/role', function (Request $request) { return $request->user()->getRoleNames(); });
+    
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('companies', [CompanyController::class, 'index']);
     Route::get('companies/{id}', [CompanyController::class, 'show']);
 
-    Route::group(['middleware' => 'role:Owner', 'role:Administrator'], function () {
+    Route::group(['middleware' => ['role:Owner|Administrator|Payroll_Officer']], function () {
+        // EMPLOYEE ROUTES
+        Route::resource('employees', EmployeeController::class);
+        Route::put('employees/{id}/resetPassword', [EmployeeController::class, 'resetPassword']); // TODO
+
+
+        // ACCOUNT ROUTES
+        Route::get('accounts', [AccountController::class, 'index']);
+        Route::get('accounts/{id}', [AccountController::class, 'show']);
+    });
+
+
+    Route::group(['middleware' => ['role:Owner|Administrator']], function () {
         // LOAN ROUTES
         Route::resource('loans', LoanController::class);
-        Route::put('owner/loans/{id}/acknowledge', [LoanController::class, 'acknowledge']); // TODO
+        Route::put('loans/{id}/acknowledge', [LoanController::class, 'acknowledge']); // TODO
 
         // COMPANY ROUTES
         Route::post('companies', [CompanyController::class, 'store']);
         Route::put('companies/{id}', [CompanyController::class, 'update']);
         Route::delete('companies/{id}', [CompanyController::class, 'destroy']);
 
-        // EMPLOYEE ROUTES
-        Route::resource('employees', EmployeeController::class);
-
         // ACCOUNT ROUTES
-        Route::put('accounts/{id}', [AccountController::class, 'update']); // TODO
+        Route::put('accounts/{id}', [AccountController::class, 'update']);
 
         // RECEIVABLE ROUTES
         Route::get('receivables', [ReceivableController::class, 'index']); // TODO
@@ -44,31 +53,26 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => 'role:Administrator'], function () {
         // PAYROLL ROUTES
         Route::resource('payrolls', PayrollController::class);
+        Route::put('payrolls/{id}/resetPassword', [PayrollController::class, 'resetPassword']); // TODO
     });
 
     Route::group(['middleware' => 'role:Payroll_Officer'], function () {
         Route::get('payroll/loans', [LoanController_Payroll::class, 'index']);
         Route::get('payroll/loans/{id}', [LoanController_Payroll::class, 'show']);
+        Route::post('payroll/loans', [LoanController_Payroll::class, 'store']);
         Route::put('payroll/loans/{id}', [LoanController_Payroll::class, 'update']);
-        Route::delete('payroll/loans/{id}', [LoanController_Payroll::class, 'destroy']);
+        Route::put('payroll/loans/{id}/status', [LoanController_Payroll::class, 'setStatus']);
 
-        // EMPLOYEE ROUTES
-        Route::resource('employees', EmployeeController::class);
         Route::put('employees/{id}/verify', [EmployeeController::class, 'verify']);
-        Route::put('employees/{id}/resetPassword', [EmployeeController::class, 'resetPassword']); // TODO
         Route::put('employees/{id}/deactivate', [EmployeeController::class, 'deactivate']);
-
-        // ACCOUNT ROUTES
-        Route::get('accounts', [AccountController::class, 'index']); // TODO
-        Route::post('accounts', [AccountController::class, 'store']); // TODO
     });
     
-    Route::group(['middleware' => 'role:Employee'], function () { // TEST
+    Route::group(['middleware' => 'role:Employee'], function () {
         Route::get('employee/loans', [LoanController_Employee::class, 'index']); 
         Route::get('employee/loans/{id}', [LoanController_Employee::class, 'show']);
         Route::post('employee/loans', [LoanController_Employee::class, 'store']);
 
-        Route::get('account', [AccountController::class, 'show']); // TO TEST
+        Route::get('account', [AccountController::class, 'showOne']);
     });
     
 });

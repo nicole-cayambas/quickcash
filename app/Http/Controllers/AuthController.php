@@ -13,33 +13,27 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        try{
-            $validatedData = $request->validate(
-                [
-                    'first_name' => 'required|max:55',
-                    'last_name' => 'required|max:55',
-                    'email' => 'required|email|unique:users',
-                    'password' => 'required|min:6',
-                ]
-            );
-    
-            $user = User::create([
-                'first_name' => $validatedData['first_name'],
-                'last_name' => $validatedData['last_name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
-            $token = $user->createToken('apiToken')->plainTextToken;
-            $res = [
-                'token' => $token,
-                'user' => $user
-            ];
-            return response()->json($res, 201);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => 'Something went wrong'.$th
-            ], 500);
-        }
+        $validatedData = $request->validate(
+            [
+                'first_name' => 'required|max:55',
+                'last_name' => 'required|max:55',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6',
+            ]
+        );
+
+        $user = User::create([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+        $token = $user->createToken('apiToken')->plainTextToken;
+        $res = [
+            'token' => $token,
+            'user' => $user
+        ];
+        return response()->json($res, 201);
         
     }
 
