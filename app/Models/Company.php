@@ -18,20 +18,16 @@ class Company extends Model
         'logo'
     ];
 
-    public function user() {
+    public function users() {
         return $this->hasMany(User::class);
     }
 
-    public function account() {
+    public function accounts() {
         return $this->hasMany(Account::class);
     }
 
     public function loans() {
         return $this->hasMany(Loan::class);
-    }
-
-    public function employee() {
-        return $this->hasMany(Employee::class);
     }
     
 }

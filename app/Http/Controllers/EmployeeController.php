@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Hash;
+
 
 class EmployeeController extends Controller
 {
@@ -14,7 +17,7 @@ class EmployeeController extends Controller
     public function index()
     {
         if(auth()->user()->hasRole('Payroll_Officer')){
-            $employees = auth()->user()->company->employees()->get();
+            $employees = auth()->user()->company->users()->get();
         } else $employees = User::all();
         return response()->json($employees, 200);
     }
@@ -27,7 +30,6 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //untested
         $validatedData = $request->validate(
             [
                 'first_name' => 'required|max:55',
@@ -37,11 +39,17 @@ class EmployeeController extends Controller
             ]
         );
 
+        $user = User::create([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
         if(auth()->user()->hasRole('Payroll_Officer')){
-            $validatedData['company_id'] = auth()->user()->company_id;
+            $user->company()->associate(auth()->user()->company);
         }
 
-        $user = User::create($validatedData);
         return response()->json($user, 201);
     }
 
@@ -53,10 +61,10 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        // untested
         if(auth()->user()->hasRole('Payroll_Officer')){
-            $employee = auth()->user()->company->employees()->findOrFail($id);
+            $employee = auth()->user()->company->users()->findOrFail($id);
         } else $employee = User::findOrFail($id);
+
         return response()->json($employee, 200);
     }
 
@@ -69,17 +77,39 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // untested
+        $validatedData = $request->validate(
+            [
+                'first_name' => 'sometimes|required|max:55',
+                'last_name' => 'sometimes|required|max:55',
+            ]
+        );
+
         if(auth()->user()->hasRole('Payroll_Officer')){
-            $employee = auth()->user()->company->employees()->findOrFail($id);
+            $employee = auth()->user()->company->users()->findOrFail($id);
         } else $employee = User::findOrFail($id);
-        $employee = auth()->user()->company->employees()->findOrFail($id);
 
         if($employee){
-            $employee->update($request->all());
+            $employee->update([
+                'first_name' => $validatedData['first_name'] ?? $employee->first_name,
+                'last_name' => $validatedData['last_name'] ?? $employee->last_name,
+            ]);
         }
         return response()->json($employee, 200);
     }
+
+    public function resetPassword(Request $request, $id) {
+
+        //untested, will look up later
+        $user = auth()->user()->company->users()->findOrFail($id);
+        $request->validate([
+            'password' => 'required|min:6',
+        ]);
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+        return response()->json($user, 200);
+    }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -87,15 +117,22 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function deactivate($id)
     {
-        // untested
-        if(auth()->user()->hasRole('Payroll_Officer')){
-            $employee = auth()->user()->company->employees()->findOrFail($id);
-        } else $employee = User::findOrFail($id);
+        $employee = auth()->user()->company->users()->findOrFail($id);
         if($employee){
-            $employee->delete();
+            $employee->company_id = null;
+            $employee->is_verified = false;
+            $employee->save();
         }
-        return response()->json('Employee deleted.', 204);
+        return response()->json('Employee removed from company.', 200);
+    }
+
+
+    public function verify($id) {
+        $employee = auth()->user()->company->users()->findOrFail($id);
+        $employee->is_verified = true;
+        $employee->save();
+        return response()->json($employee, 200);
     }
 }

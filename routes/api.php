@@ -23,7 +23,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => 'role:Owner', 'role:Administrator'], function () {
         // LOAN ROUTES
         Route::resource('loans', LoanController::class);
-        Route::put('owner/loans/{id}/acknowledge', [LoanController::class, 'acknowledge']);
+        Route::put('owner/loans/{id}/acknowledge', [LoanController::class, 'acknowledge']); // TODO
 
         // COMPANY ROUTES
         Route::post('companies', [CompanyController::class, 'store']);
@@ -34,10 +34,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::resource('employees', EmployeeController::class);
 
         // ACCOUNT ROUTES
-        Route::put('accounts/{id}', [AccountController::class, 'update']);
+        Route::put('accounts/{id}', [AccountController::class, 'update']); // TODO
 
         // RECEIVABLE ROUTES
-        Route::get('receivables', [ReceivableController::class, 'index']);
+        Route::get('receivables', [ReceivableController::class, 'index']); // TODO
 
     });
 
@@ -54,12 +54,21 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         // EMPLOYEE ROUTES
         Route::resource('employees', EmployeeController::class);
+        Route::put('employees/{id}/verify', [EmployeeController::class, 'verify']);
+        Route::put('employees/{id}/resetPassword', [EmployeeController::class, 'resetPassword']); // TODO
+        Route::put('employees/{id}/deactivate', [EmployeeController::class, 'deactivate']);
+
+        // ACCOUNT ROUTES
+        Route::get('accounts', [AccountController::class, 'index']); // TODO
+        Route::post('accounts', [AccountController::class, 'store']); // TODO
     });
     
-    Route::group(['middleware' => 'role:Employee'], function () {
-        Route::get('employee/loans', [LoanController_Employee::class, 'index']);
+    Route::group(['middleware' => 'role:Employee'], function () { // TEST
+        Route::get('employee/loans', [LoanController_Employee::class, 'index']); 
         Route::get('employee/loans/{id}', [LoanController_Employee::class, 'show']);
         Route::post('employee/loans', [LoanController_Employee::class, 'store']);
+
+        Route::get('account', [AccountController::class, 'show']); // TO TEST
     });
     
 });

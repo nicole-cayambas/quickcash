@@ -21,7 +21,7 @@ class StatusSeeder extends Seeder
             ['name' => 'Approved'],
             ['name' => 'Rejected'],
             ['name' => 'Cancelled'],
-            ['name' => 'Completed'],
+            ['name' => 'Completed']
         ];
         foreach ($statuses as $status) {
             Status::create($status);

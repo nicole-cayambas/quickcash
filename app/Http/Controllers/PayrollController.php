@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class PayrollController extends Controller
 {
@@ -13,7 +14,7 @@ class PayrollController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(User::role('Payroll_Officer')->get()->groupBy('company_id'), 200);
     }
 
     /**
@@ -24,7 +25,8 @@ class PayrollController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+        ]);
     }
 
     /**
