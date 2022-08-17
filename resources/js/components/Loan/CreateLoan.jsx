@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { axios } from 'axios'
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
-export default function() {
-    const [loan, setLoan] = useState({});
-    
-    // const getLoan = () => {
-        
-    // }
 
-    // handleSubmit = (e) => {
-    //     axios.post('/api/loans', { loan })
-    //     .then(function(response) {
-    //         console.log(response)
-    //     })
-    //     .catch(function(error) {
-    //         console.log(error)
-    //     });
-    //     e.preventDefault();
-    // }
-
-    // useEffect(() => {
-    //     getLoan();
-    // },[loans])
+const CreateLoan = (props) => {
     return (
         <div>
-            {/* <form onSubmit={handleSubmit}>
-                <input type="text" value={loan.value} onChange={ setLoan(loan.value) } />
-                <button>Send</button>
-            </form> */}
+            <h1>Create Loan</h1>
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+            <CompaniesSelection />
         </div>
     )
 }
+
+export default CreateLoan;

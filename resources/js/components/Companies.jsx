@@ -1,7 +1,13 @@
 import React from 'react'
+import CompaniesSelection from './CompaniesSelection'
 
-export default function() {
+const Companies = () => {
     return (
-        <div>companies</div>
+        <div>
+            <h1>Companies</h1>
+            
+        </div>
     )
 }
+
+export default Companies

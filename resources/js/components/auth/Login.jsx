@@ -10,11 +10,13 @@ export default function() {
         e.preventDefault();
         axios.get('/sanctum/csrf-cookie').then(() => {
             axios.post('/api/login',{
+                headers: {
+                    accept: 'application/json',
+                },
                 email: email,
                 password: password
             }).then(res => {
-                localStorage.setItem('user', JSON.stringify(res.data))
-                console.log(res.data.token)
+                localStorage.setItem('token', res.data.token)
             }).catch(err => {
                 console.log(err);
             })
