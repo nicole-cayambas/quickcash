@@ -17,14 +17,14 @@ class Loan extends Model
         'loan_date',
         'amortizations',
         'percentage',
-        'total_interest_rate',
-        'company_id',
+        // 'total_interest_rate',
+        // 'company_id',
         'account_id',
     ];
 
-    public function company() {
-        return $this->belongsTo(Company::class);
-    }
+    // public function company() {
+    //     return $this->belongsTo(Company::class);
+    // }
 
     public function account() {
         return $this->belongsTo(Account::class);

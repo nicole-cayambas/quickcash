@@ -19,6 +19,7 @@ class StatusSeeder extends Seeder
         $statuses = [
             ['name' => 'Pending'],
             ['name' => 'Approved'],
+            ['name' => 'Acknowledged'],
             ['name' => 'Rejected'],
             ['name' => 'Cancelled'],
             ['name' => 'Completed']

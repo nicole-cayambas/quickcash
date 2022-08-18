@@ -14,7 +14,7 @@ class Account extends Model
         'user_id',
         'company_id',
         'balance',
-        'capital',
+        // 'capital', // move to company
     ];
 
     public function user() {
@@ -24,4 +24,6 @@ class Account extends Model
     public function loans() {
         return $this->hasMany(Loan::class);
     }
+
+    // public function bank
 }

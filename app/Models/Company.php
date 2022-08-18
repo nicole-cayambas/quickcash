@@ -18,6 +18,7 @@ class Company extends Model
         'logo'
     ];
 
+    // maybe oks na ang acc
     public function users() {
         return $this->hasMany(User::class);
     }
@@ -26,8 +27,8 @@ class Company extends Model
         return $this->hasMany(Account::class);
     }
 
-    public function loans() {
-        return $this->hasMany(Loan::class);
-    }
+    // public function loans() {
+    //     return $this->hasMany(Loan::class);
+    // }
     
 }
