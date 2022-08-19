@@ -1,37 +1,108 @@
-import { Typography, Divider } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+
+import { usePageStore } from './stateman'
+import { isLoggedIn } from './auth/auth'
+
+import { Box, Toolbar, Typography } from '@mui/material';
+
+import Home from './pages/Home';
+import Receivables from './pages/Receivables';
+import Companies from './pages/Companies';
+import PayrollOfficers from './pages/PayrollOfficers';
+import Administrators from './pages/Administrators';
+import Employees from './pages/Employees';
+import Loans from './pages/Loans';
+import CreateLoan from './pages/CreateLoan';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
-// import Logout from './auth/Logout';
-import Receivables from './Receivables';
-import Loan from './Loan/Loan';
-import Loans from './Loan/Loans';
-import Amortization from './Amortization';
-import Companies from './Companies';
-import Payrolls from './Payrolls';
-import Admins from './Admins';
-import Employees from './Employees';
-import CreateLoan from './Loan/CreateLoan';
 
-export default function(props){
-  return <React.Fragment>
-    <Typography component="h1"></Typography>
-    <Divider />
-      <Routes>
-          <Route path="/" element={<div>kwa 1</div>} />
-          <Route path="receivables" element={< Receivables /> } />
-          <Route path="companies" element={< Companies /> } />
-          <Route path="payroll-officers" element={< Payrolls /> } />
-          <Route path="admins" element={< Admins /> } />
-          <Route path="employees" element={< Employees /> } />
-          {/* <Route path="loan" element={<Loan />} />  */}
-          <Route path="loans" element={<Loans />} /> 
-          {/* <Route path="amortization" element={<Amortization />} /> // change to something like "/loans/id/amortization" */} //no route needed pala
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
-          {/* <Route path="logout" element={<Logout />} /> */}
-          {/* <Route path="loantest" element={<CreateLoan />} /> */}
-      </Routes>
-  </React.Fragment>
+const LoggedInRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/receivables" element={<Receivables />} />
+        <Route path="/companies" element={<Companies />} />
+        <Route path="/payroll_officers" element={<PayrollOfficers />} />
+        <Route path="/administrators" element={<Administrators />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/loans" element={<Loans />} />
+        <Route path="/loans/create" element={<CreateLoan />} />
+    </Routes>
+    )
 }
+
+const LoggedOutRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+    </Routes>
+    )
+}
+
+const RightSection = () => {
+    const { page } = usePageStore();
+
+    if(isLoggedIn()) {
+    return ( 
+        <Box
+            component="main"
+            sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        >
+            <Toolbar>
+                <Typography variant="h6" noWrap component="div">
+                    {page}
+                </Typography>
+            </Toolbar>
+            <LoggedInRoutes />
+        </Box>
+    )
+    } else {
+        return (
+            <Box
+                component="main"
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Toolbar>
+                    <Typography variant="h6" noWrap component="div">
+                        {page}
+                    </Typography>
+                </Toolbar>
+                <LoggedOutRoutes />
+            </Box>
+        )
+    }
+}
+export default RightSection
+
+
+
+
+
+
+
+
+
+
+
+
+// // OLD CODE
+// import { Typography, Divider } from '@mui/material';
+// import React from 'react';
+// import { Route, Routes } from 'react-router-dom';
+// import TempComponent from './TempComponent';
+
+// const RightSection = () => {
+//   return <React.Fragment>
+//     <Typography component="h1">you are viewing the Kwa page</Typography>
+//     <Divider />
+//       <Routes>
+//           <Route path="/" element={<div>home</div>} />
+//           <Route path="about" element={<div>about</div>} />
+//           <Route path="wow" element={<TempComponent />} />
+//       </Routes>
+//   </React.Fragment>
+// }
+// export default RightSection

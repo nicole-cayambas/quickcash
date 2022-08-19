@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
+
 import { usePageStore } from '../stateman'
 
-const Signup = () => {
+const Administrators = () => {
     const { page } = usePageStore();
     useEffect(() => {
         usePageStore.setState({
-            page: 'Signup'
+            page: 'Administrators'
         })
     }, [])
     return <div>{page}</div>
 }
 
-export default Signup
+export default Administrators

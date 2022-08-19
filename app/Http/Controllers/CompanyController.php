@@ -7,6 +7,10 @@ use App\Models\Company;
 
 class CompanyController extends Controller
 {
+
+    public function test() {
+        return response()->json(Company::all(), 200);
+    }
     /**
      * Display a listing of the resource.
      *

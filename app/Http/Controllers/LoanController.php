@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Loan;
 
 
-class LoanController_Admin extends Controller
+class LoanController extends Controller
 {
     /**
      * Display a listing of the resource.

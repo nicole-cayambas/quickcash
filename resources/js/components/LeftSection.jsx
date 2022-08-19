@@ -1,55 +1,120 @@
-import { Stack, Button } from '@mui/material';
+import React, { useEffect } from 'react';
+import { NavLink, useMatch, useResolvedPath } from "react-router-dom";
+
+import { isLoggedIn, logOut } from './auth/auth';
 import axios from 'axios';
-import React from 'react';
-import { Link } from 'react-router-dom';
 
-export default function(){
+// MATERIAL
+import { ListItemIcon } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Button from '@mui/material/Button';
 
-  // TO DO:
-
-  // if(localStorage.getItem('user')){
-  //   console.log('here')
-  //   const user = JSON.parse(localStorage.getItem('user'))
-  //   const headers = {
-  //     accept: 'application/json',
-  //     authorization: `Bearer ${user.token}`
-  //   }
-  // }
-  // const handleOnClick = () => {
-  //   axios.post('/api/logout', {
-  //     headers: headers
-  //   }).then(() => {
-  //     localStorage.removeItem('user')
-  //     window.location.href = '/'
-  //   }).catch(err => {
-  //     console.log(err)
-  //   })
-  // }
+function CustomLinkButton({ children, to, ...props }) {
+    let resolved = useResolvedPath(to);
+    let match = useMatch({ path: resolved.pathname, end: true });
   
+    return (
+        <ListItem disablePadding>
+            <ListItemButton component={NavLink} to={to} {...props} selected={match !== null}>
+                <ListItemIcon>{match ? <ArrowForwardIosIcon /> : undefined}</ListItemIcon>
+                <ListItemText>{children}</ListItemText>
+            </ListItemButton>
+        </ListItem>
+    );
+  }
 
-  return <Stack spacing={1}>
-    <Button component={Link} to="/">Home</Button>
 
-    {/* for owner, admin, payroll(for their company only) */}
-    <Button component={Link} to="/receivables">Receivables</Button> 
 
-    {/* for owner, admin,  */}
-    <Button component={Link} to="/companies">Companies</Button> 
 
-    {/* for owner, admin,  */}
-    <Button component={Link} to="/payroll-officers">Payroll Officers</Button> 
-    
-    {/* only owner */}
-    <Button component={Link} to="/admins">Admins</Button> 
+const drawerWidth = 240;
+const LeftSection = () => {
 
-    {/* for owner, admin, payrolls,  */}
-    <Button component={Link} to="/employees">Employees</Button> 
+    if(isLoggedIn()) {
 
-    {/* for owner, admin, payrolls, employee(for themselves only) */}
-    <Button component={Link} to="/loans">Loans</Button> 
-    
-    <Button component={Link} to="/signup">Sign Up</Button>
-    <Button component={Link} to="/login">Login</Button>
-    {/* <Button onClick={handleOnClick}>Logout</Button> */}
-  </Stack>
+        const logout = () => {
+            axios.post('/api/logout').then(res => {
+                logOut()
+                window.location.href = '/login'
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    return (
+        <Drawer
+            sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                width: drawerWidth,
+                boxSizing: 'border-box',
+                },
+            }}
+            variant="permanent"
+            anchor="left"
+        >
+        <List>
+            <CustomLinkButton to="/">Home</CustomLinkButton>
+            <CustomLinkButton to="/receivables">Receivables</CustomLinkButton>
+            <CustomLinkButton to="/companies">Companies</CustomLinkButton>
+            <CustomLinkButton to="/payroll_officers">Payroll Officers</CustomLinkButton>
+            <CustomLinkButton to="/administrators">Administrators</CustomLinkButton>
+            <CustomLinkButton to="/employees">Employees</CustomLinkButton>
+            <CustomLinkButton to="/loans">Loans</CustomLinkButton>
+            <Button onClick={logout}> Logout </Button>
+        </List>
+        </Drawer>
+    )} else {
+        return (
+            <Drawer
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    boxSizing: 'border-box',
+                    },
+                }}
+                variant="permanent"
+                anchor="left"
+            >
+            <List>
+                <CustomLinkButton to="/">Home</CustomLinkButton>
+                <CustomLinkButton to="/login">Login</CustomLinkButton>
+                <CustomLinkButton to="/signup">Signup</CustomLinkButton>
+            </List>
+            </Drawer>
+        )
+    }
 }
+export default LeftSection;
+
+
+
+
+
+
+
+
+
+
+
+// OLD CODE
+// import { Stack, Button } from '@mui/material';
+// import React from 'react';
+// import { Link } from 'react-router-dom';
+
+// const LeftSection = () => {
+//   return <Stack spacing={1}>
+//     <Button component={Link} to="/">Home</Button>
+//     <Button component={Link} to="/about">About</Button>
+//     <Button component={Link} to="/wow">Temp</Button>
+//   </Stack>
+  
+// }
+// export default LeftSection;
+

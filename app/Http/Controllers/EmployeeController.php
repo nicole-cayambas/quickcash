@@ -9,6 +9,10 @@ use Hash;
 
 class EmployeeController extends Controller
 {
+
+    public function test() {
+        return response()->json(User::all(), 200);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,6 +23,7 @@ class EmployeeController extends Controller
         if(auth()->user()->hasRole('Payroll_Officer')){
             $employees = auth()->user()->company->users()->get();
         } else $employees = User::all();
+
         return response()->json($employees, 200);
     }
 
