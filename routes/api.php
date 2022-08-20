@@ -15,15 +15,17 @@ use App\Http\Controllers\AuthController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user', function (Request $request) { return $request->user(); });
-    Route::get('user/role', function (Request $request) { return $request->user()->getRoleNames(); });
+    Route::get('user/role', function (Request $request) { 
+        return $request->user()->getRoleNames()->first();
+    });
     
     Route::post('logout', [AuthController::class, 'logout']);
-    // Route::get('companies', [CompanyController::class, 'index']); // BALIK
-    // Route::get('companies/{id}', [CompanyController::class, 'show']); // BALIK
+    Route::get('companies', [CompanyController::class, 'index']); // BALIK
+    Route::get('companies/{id}', [CompanyController::class, 'show']); // BALIK
 
     Route::group(['middleware' => ['role:Owner|Administrator|Payroll_Officer']], function () {
         // EMPLOYEE ROUTES
-        // Route::resource('employees', EmployeeController::class); // IBALIK MOTO
+        Route::resource('employees', EmployeeController::class); // IBALIK MOTO
         Route::put('employees/{id}/resetPassword', [EmployeeController::class, 'resetPassword']); // TODO
 
 
@@ -81,5 +83,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 
-Route::get('employees/test', [EmployeeController::class, 'test']);
-Route::get('companies/test', [CompanyController::class, 'test']);
+// Route::get('employees/test', [EmployeeController::class, 'test']);
+// Route::get('companies/test', [CompanyController::class, 'test']);

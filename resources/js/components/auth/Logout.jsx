@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
-import axios from 'axios'
-import { isLoggedIn, logOut } from './auth'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import http from '../http'
+import { usePageStore } from '../stateman'
 
-export const Logout = () => {
-    if(isLoggedIn()) {
-        axios.post('/api/logout').then(res => {
-            logOut()
-        }).catch(err => {
-            console.log(err)
+export async function Logout() {
+    await http.get('sanctum/csrf-cookie').then(async () => {
+        await http.post('/api/logout').then(() => {
+            usePageStore.setState({
+                isLoggedIn: false,
+            })
         })
-    }
+    })
 }

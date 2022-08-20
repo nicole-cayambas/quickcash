@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react'
 
 import { usePageStore } from '../stateman'
-// import User from '../auth/user'
-import { isLoggedIn } from '../auth/auth'
 
 
 const Home = () => {
+    const { isLoggedIn, user } = usePageStore()
+    const email_verified_at = user ? user.email_verified_at : null
     useEffect(() => {
         usePageStore.setState({
             page: 'Home',
         })
     }, [])
-    if(isLoggedIn()) { 
-        return (
-            <h1>Home</h1>
-        )
-    } else  {
-        return <div>You're not logged in</div>
-    }
+    if(!isLoggedIn) return <div>You need to login.</div>
+    else if(!email_verified_at) return <div>Please confirm your email.</div>
+    else return <h1>Home</h1>
 }
 
 export default Home

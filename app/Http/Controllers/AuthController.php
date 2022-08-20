@@ -21,56 +21,41 @@ class AuthController extends Controller
                 'password' => 'required|min:6',
             ]
         );
-
         $user = User::create([
             'first_name' => $validatedData['first_name'],
             'last_name' => $validatedData['last_name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
-        $token = $user->createToken('apiToken')->plainTextToken;
-        $res = [
-            'token' => $token,
-            'user' => $user
-        ];
-        return response()->json($res, 201);
+
+        Auth::login($user);
+
+        return response()->json('User created successfully!', 201);
         
     }
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
-            // 'remember_me' => 'boolean'
         ]);
-        $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
         }
-        $user = $request->user();
-        $token = $user->createToken('apiToken')->plainTextToken;
 
-        $res = [
-            'token' => $token,
-            'user' => $user
-        ];
-        return response()->json($res, 200);
+        return response()->json('Logged In', 200);
     }
 
 
     public function logout(Request $request)
     {
-        if($request->user()) {
-            $request->user()->tokens()->delete();
-            return response()->json([
-                'message' => 'Successfully logged out'
-            ], 200);
-        }
-        return response()->json([
-            'message' => 'No user logged in'
-        ], 401);
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return response()->json('Successfully logged out');
     }
 }

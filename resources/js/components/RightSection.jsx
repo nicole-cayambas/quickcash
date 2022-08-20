@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { usePageStore } from './stateman'
-import { isLoggedIn } from './auth/auth'
 
 import { Box, Toolbar, Typography } from '@mui/material';
 
@@ -17,7 +16,44 @@ import CreateLoan from './pages/CreateLoan';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 
-const LoggedInRoutes = () => {
+const RightSection = () => {
+    const { isLoggedIn, user, role } = usePageStore()
+    const email_verified_at = user ? user.email_verified_at : null
+
+
+    if(!isLoggedIn) {
+        return <BoxComponent child={<LoggedOutRoutes />} />
+    } else if(!email_verified_at) {
+        return <BoxComponent child={<UnconfirmedRoutes />} />
+    } else if(role === 'Administrator') {
+        return <BoxComponent child={<AdminRoutes />} />
+    } else if(role === 'Owner') {
+        return <BoxComponent child={<OwnerRoutes />} />
+    } else if(role === 'Payroll_Officer') {
+        return <BoxComponent child={<PayrollRoutes />} />
+    } else if(role === 'Employee') {
+        return <BoxComponent child={<EmployeeRoutes />} />
+    }
+}
+
+export default RightSection
+
+const BoxComponent = (props) => {
+    const { page } = usePageStore();
+
+    return (
+        <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+            <Toolbar>
+                <Typography variant="h6" noWrap component="div">
+                    {page}
+                </Typography>
+            </Toolbar>
+            {props.child}
+        </Box>
+    )
+}
+
+const OwnerRoutes = () => {
     return (
     <Routes>
         <Route path="/" element={<Home />} />
@@ -26,6 +62,42 @@ const LoggedInRoutes = () => {
         <Route path="/payroll_officers" element={<PayrollOfficers />} />
         <Route path="/administrators" element={<Administrators />} />
         <Route path="/employees" element={<Employees />} />
+        <Route path="/loans" element={<Loans />} />
+        <Route path="/loans/create" element={<CreateLoan />} />
+    </Routes>
+    )
+}
+
+const AdminRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/receivables" element={<Receivables />} />
+        <Route path="/companies" element={<Companies />} />
+        <Route path="/payroll_officers" element={<PayrollOfficers />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/loans" element={<Loans />} />
+        <Route path="/loans/create" element={<CreateLoan />} />
+    </Routes>
+    )
+}
+
+const PayrollRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/receivables" element={<Receivables />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/loans" element={<Loans />} />
+        <Route path="/loans/create" element={<CreateLoan />} />
+    </Routes>
+    )
+}
+
+const EmployeeRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
     </Routes>
@@ -42,67 +114,11 @@ const LoggedOutRoutes = () => {
     )
 }
 
-const RightSection = () => {
-    const { page } = usePageStore();
-
-    if(isLoggedIn()) {
-    return ( 
-        <Box
-            component="main"
-            sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-        >
-            <Toolbar>
-                <Typography variant="h6" noWrap component="div">
-                    {page}
-                </Typography>
-            </Toolbar>
-            <LoggedInRoutes />
-        </Box>
+const UnconfirmedRoutes = () => {
+    return (
+    <Routes>
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/confirm" element={<Confirm />} /> */}
+    </Routes>
     )
-    } else {
-        return (
-            <Box
-                component="main"
-                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-            >
-                <Toolbar>
-                    <Typography variant="h6" noWrap component="div">
-                        {page}
-                    </Typography>
-                </Toolbar>
-                <LoggedOutRoutes />
-            </Box>
-        )
-    }
 }
-export default RightSection
-
-
-
-
-
-
-
-
-
-
-
-
-// // OLD CODE
-// import { Typography, Divider } from '@mui/material';
-// import React from 'react';
-// import { Route, Routes } from 'react-router-dom';
-// import TempComponent from './TempComponent';
-
-// const RightSection = () => {
-//   return <React.Fragment>
-//     <Typography component="h1">you are viewing the Kwa page</Typography>
-//     <Divider />
-//       <Routes>
-//           <Route path="/" element={<div>home</div>} />
-//           <Route path="about" element={<div>about</div>} />
-//           <Route path="wow" element={<TempComponent />} />
-//       </Routes>
-//   </React.Fragment>
-// }
-// export default RightSection
