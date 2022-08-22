@@ -109,9 +109,11 @@ const Loans = () => {
             </Box>
         )
     } else {
-        return <div>
-            <h1>You are not logged in</h1>
-        </div>
+        return (
+            <div>
+                <h1>You are not logged in</h1>
+            </div>
+        )
     }
 }
 

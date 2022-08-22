@@ -165,6 +165,5 @@ const logout = async () => {
             isLoggedIn: false,
             user: {},
         })
-
     }
 }

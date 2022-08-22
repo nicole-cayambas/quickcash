@@ -32,10 +32,10 @@ class LoanController_Payroll extends Controller
     {
         $validatedData = $request->validate([
             'amount' => 'required|numeric',
-            'loan_date' => 'required|date|before_or_equal:today',
+            'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
-            'total_interest_rate' => 'required|numeric|between:0,100',
+            // 'total_interest_rate' => 'required|numeric|between:0,100',
             'account_id' => 'required|numeric|exists:accounts,id',
         ]);
         $loan = auth()->user()->company->loans()->create($request->all());
@@ -66,10 +66,10 @@ class LoanController_Payroll extends Controller
     {
         $request->validate([
             'amount' => 'sometimes|required|numeric',
-            'loan_date' => 'sometimes|required|date|before_or_equal:today',
+            'loan_date' => 'sometimes|required|date|after:yesterday',
             'amortizations' => 'sometimes|required|numeric',
             'percentage' => 'sometimes|required|numeric|between:0,100',
-            'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
+            // 'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
             'account_id' => 'sometimes|required|numeric|exists:accounts,id',
         ]);
 

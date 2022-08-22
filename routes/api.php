@@ -19,7 +19,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         return $request->user()->getRoleNames()->first();
     });
     Route::get('user/account', function (Request $request) {
-        return $request->user()->account;
+        return $request->user()->account->get();
     }); 
 
     Route::get('user/account', function (Request $request) {

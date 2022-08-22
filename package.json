@@ -18,8 +18,11 @@
         "vite": "^3.0.9"
     },
     "dependencies": {
+        "@material-ui/pickers": "^3.3.10",
         "@mui/icons-material": "^5.8.4",
+        "@mui/lab": "^5.0.0-alpha.95",
         "@mui/x-data-grid": "^5.15.3",
+        "@mui/x-date-pickers": "^5.0.0-beta.6",
         "cookie": "^0.5.0",
         "js-cookie": "^3.0.1",
         "moment": "^2.29.4",

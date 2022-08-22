@@ -31,8 +31,8 @@ class LoanController extends Controller
             'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
-            'total_interest_rate' => 'required|numeric|between:0,100',
-            'company_id' => 'required|exists:companies,id',
+            // 'total_interest_rate' => 'required|numeric|between:0,100',
+            // 'company_id' => 'required|exists:companies,id',
             'account_id' => 'required|exists:accounts,id',
         ]);
         $loan = Loan::create($request->all());
@@ -63,11 +63,11 @@ class LoanController extends Controller
     {
         $request->validate([
             'amount' => 'sometimes|required|numeric',
-            'loan_date' => 'sometimes|required|date|before_or_equal:today',
+            'loan_date' => 'sometimes|required|date|after:yesterday',
             'amortizations' => 'sometimes|required|numeric',
             'percentage' => 'sometimes|required|numeric|between:0,100',
-            'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
-            'company_id' => 'sometimes|required|exists:companies,id',
+            // 'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
+            // 'company_id' => 'sometimes|required|exists:companies,id',
             'account_id' => 'sometimes|required|exists:accounts,id',
         ]);
 

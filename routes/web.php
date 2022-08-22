@@ -15,13 +15,6 @@ use App\Http\Controllers\LoanController;
 |
 */
 
-
-// Route::get('/login', function(){
-//     // return data
-// });
-
-Route::get('/test', [CompanyController::class, 'method']);
-
 Route::any('/{any}', function(){
     return view('main');
 })->where('any', '.*');
