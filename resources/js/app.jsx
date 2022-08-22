@@ -1,5 +1,5 @@
 // import './bootstrap.js';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, useNavigate } from "react-router-dom";
 import PrimaryLayout from './layouts/PrimaryLayout';
@@ -19,23 +19,26 @@ const theme = createTheme({
 
 
 const App = () => {
+    const { user, role } = usePageStore()
+
     useEffect(() => {
         getUser()
     }, [])
 
     const getUser = async () => {
-        await http.get('sanctum/csrf-cookie')
-        await http.get('/api/user').then(res => {
+        const user = await http.get('/api/user')
+        if (user.status === 200) {
             usePageStore.setState({
                 isLoggedIn: true,
-                user: res.data
+                user: user.data
             })
-        })
-        await http.get('/api/user/role').then(res => {
+        }
+        const role = await http.get('/api/user/role')
+        if(role.status === 200){
             usePageStore.setState({
-                role: res.data
+                role: role.data
             })
-        })
+        }
     }
 
     return (

@@ -28,7 +28,7 @@ class LoanController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric',
-            'loan_date' => 'required|date|before_or_equal:today',
+            'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
             'total_interest_rate' => 'required|numeric|between:0,100',

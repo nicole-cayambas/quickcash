@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('company_id')->constrained('companies');
             $table->decimal('balance', 10, 2)->nullable();
-            $table->decimal('capital', 10, 2);
+            // $table->decimal('capital', 10, 2);
             $table->timestamps();
         });
     }

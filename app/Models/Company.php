@@ -11,6 +11,7 @@ class Company extends Model
 
     protected $fillable = [
         'name',
+        'capital',
         'address',
         'phone',
         'email',
@@ -20,15 +21,11 @@ class Company extends Model
 
     // maybe oks na ang acc
     public function users() {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::role('Payroll_Officer'));
     }
 
     public function accounts() {
         return $this->hasMany(Account::class);
     }
-
-    // public function loans() {
-    //     return $this->hasMany(Loan::class);
-    // }
     
 }

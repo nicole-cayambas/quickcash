@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('website')->nullable();
             $table->string('logo')->nullable();
+            $table->decimal('capital', 13, 2)->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ class CompanyFactory extends Factory
             'email' => $this->faker->email,
             'website' => $this->faker->url,
             'logo' => $this->faker->imageUrl(),
+            'capital' => $this->faker->numberBetween(1, 1000000000),
         ];
     }
 }

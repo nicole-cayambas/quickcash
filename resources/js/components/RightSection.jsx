@@ -18,12 +18,11 @@ import Signup from './auth/Signup';
 
 const RightSection = () => {
     const { isLoggedIn, user, role } = usePageStore()
-    const email_verified_at = user ? user.email_verified_at : null
 
 
     if(!isLoggedIn) {
         return <BoxComponent child={<LoggedOutRoutes />} />
-    } else if(!email_verified_at) {
+    } else if(user.email_verified_at === null || user.email_verified_at === undefined) {
         return <BoxComponent child={<UnconfirmedRoutes />} />
     } else if(role === 'Administrator') {
         return <BoxComponent child={<AdminRoutes />} />

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { NavLink, useMatch, useResolvedPath } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { NavLink, useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 import http from './http';
 import { usePageStore } from './stateman';
 
@@ -15,14 +15,14 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 
 const LeftSection = () => {
-
     const { isLoggedIn, user, role } = usePageStore()
-    const email_verified_at = user ? user.email_verified_at : null
-
+    useEffect(() => {
+    }, [])
+    
 
     if(!isLoggedIn) {
         return <CustomDrawer child={<LoggedOutList />} />
-    } else if(!email_verified_at) {
+    } else if(user.email_verified_at === null || user.email_verified_at === undefined) {
         return <CustomDrawer child={<UnconfirmedList />} />
     } else if(role === 'Administrator') {
         return <CustomDrawer child={<AdminList />} />
@@ -32,8 +32,12 @@ const LeftSection = () => {
         return <CustomDrawer child={<PayrollList />} />
     } else if(role === 'Employee') {
         return <CustomDrawer child={<EmployeeList />} />
+    } else {
+        return <CustomDrawer child={<LoggedOutList />} />
     }
 }
+
+export default LeftSection
 
 function CustomLinkButton({ children, to, ...props }) {
     let resolved = useResolvedPath(to);
@@ -153,16 +157,14 @@ function LoggedOutList() {
 }
 
 
-async function logout() {
-    await http.get('sanctum/csrf-cookie').then(async () => {
-        await http.post('/api/logout').then(() => {
-            usePageStore.setState({
-                role: null,
-                isLoggedIn: false,
-                user: null
-            })
+const logout = async () => {
+    const logout = await http.post('/api/logout')
+    if(logout.status === 200){
+        usePageStore.setState({
+            role: '',
+            isLoggedIn: false,
+            user: {},
         })
-    })
-}
 
-export default LeftSection;
+    }
+}

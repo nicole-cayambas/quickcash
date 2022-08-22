@@ -18,6 +18,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user/role', function (Request $request) { 
         return $request->user()->getRoleNames()->first();
     });
+    Route::get('user/account', function (Request $request) {
+        return $request->user()->account;
+    }); 
+
+    Route::get('user/account', function (Request $request) {
+        return $request->user()->account;
+    });
     
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('companies', [CompanyController::class, 'index']); // BALIK
@@ -85,3 +92,5 @@ Route::post('register', [AuthController::class, 'register']);
 
 // Route::get('employees/test', [EmployeeController::class, 'test']);
 // Route::get('companies/test', [CompanyController::class, 'test']);
+// Route::get('employee/loans', [LoanController_Employee::class, 'index']); 
+// Route::get('user/account', [AccountController::class, 'show']); 
