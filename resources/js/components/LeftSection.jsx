@@ -138,8 +138,7 @@ function EmployeeList(){
 function UnconfirmedList() {
     return (
         <List>
-            <CustomLinkButton to="/">Home</CustomLinkButton>
-            <CustomLinkButton to="/confirm">Confirm</CustomLinkButton>
+            <CustomLinkButton to="/">Confirm</CustomLinkButton>
             <Divider />
             <LogoutButton />
         </List>

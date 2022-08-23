@@ -3,6 +3,7 @@ import http from "../http"
 import { usePageStore } from "../stateman"
 
 import { Typography, Stack, Card, CardContent, TextField, Button, Box, Alert, FormControl, Select, InputLabel, MenuItem } from '@mui/material'
+import StatusSelector from "../StatusSelector"
 
 import moment from "moment"
 
@@ -80,9 +81,6 @@ const CreateLoan = () => {
         else if(role==='Owner' || role==='Administrator') http.post('/api/loans', request).then((res) => {
             setMessage(res.data)
         }).catch((err) => {setMessage(err.response.data.message)})
-
-        setAmount(0)
-        setLoanDate(null)
     }
 
     return (
@@ -94,7 +92,7 @@ const CreateLoan = () => {
                     {message ? <Alert severity="info">{message}</Alert> : null}
                     <TextField required id="amount" label="Amount" name="amount" onChange={changeAmount}/>
                     <TextField type={'date'} required helperText="Loan Date" id="loan_date" name="loan_date" onChange={(e)=>{setLoanDate(e.target.value)}}/>
-                    <StatusSelector role={role} onChangeFn={(e) => {setStatus(e.target.value)}} status={status}/>
+                    <StatusSelector role={role} onChangeFn={(e) => {setStatus(e.target.value)}} status={status} cta="Status"/>
                     <Button fullWidth variant={"contained"} size="large" type={"submit"} > Submit </Button>
                 </Stack>
                 </CardContent>
@@ -135,26 +133,4 @@ const ShowCreateLoan = (props) => {
         cta = "Apply for a Loan"
     } else cta = "Create Loan"
     return <Typography variant="h5">{cta}</Typography>
-}
-
-const StatusSelector = (props) => {
-    const {role, onChangeFn, status} = props
-    if(role!=="Employee"){
-        return (
-            <FormControl fullWidth>
-                <InputLabel>Status</InputLabel>
-                <Select
-                    value={status}
-                    label="Status"
-                    onChange={onChangeFn}
-                >
-                    <MenuItem value={"Pending"}>Pending</MenuItem>
-                    <MenuItem value={"Approved"}>Approved</MenuItem>
-                    <MenuItem value={"Rejected"}>Rejected</MenuItem>
-                    <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
-                    <MenuItem value={"Completed"}>Completed</MenuItem>
-                </Select>
-            </FormControl>
-        )
-    } return null
 }

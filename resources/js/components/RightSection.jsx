@@ -14,6 +14,7 @@ import Employees from './pages/Employees';
 import Accounts from './pages/Accounts';
 import Loans from './pages/Loans';
 import CreateLoan from './pages/CreateLoan';
+import CreateAccount from './pages/CreateAccount';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 
@@ -78,6 +79,7 @@ const AdminRoutes = () => {
         <Route path="/employees" element={<Employees />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
+        <Route path="/accounts/create" element={<CreateAccount />} />
     </Routes>
     )
 }
@@ -90,6 +92,7 @@ const PayrollRoutes = () => {
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
+        <Route path="/accounts/create" element={<CreateAccount />} />
     </Routes>
     )
 }
@@ -100,6 +103,7 @@ const EmployeeRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
+        <Route path="/accounts/create" element={<CreateAccount />} />
     </Routes>
     )
 }
@@ -118,7 +122,6 @@ const UnconfirmedRoutes = () => {
     return (
     <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/confirm" element={<Confirm />} /> */}
     </Routes>
     )
 }

@@ -13,7 +13,7 @@ use App\Http\Controllers\ReceivableController;
 use App\Http\Controllers\AuthController;
 
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('user', function (Request $request) { return $request->user(); });
     Route::get('user/role', function (Request $request) { 
         return $request->user()->getRoleNames()->first();

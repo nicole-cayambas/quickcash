@@ -25,6 +25,7 @@
         "@mui/x-date-pickers": "^5.0.0-beta.6",
         "cookie": "^0.5.0",
         "js-cookie": "^3.0.1",
+        "libphonenumber-js": "^1.10.13",
         "moment": "^2.29.4",
         "zustand": "^4.1.0"
     }

@@ -14,17 +14,23 @@ const Signup = () => {
     }, [])
 
     const attemptSignup = async (creds) => {
-        await http.get('sanctum/csrf-cookie').then(async () => {
-            await http.post('/api/register', creds).then((res) => {
-                console.log(res)
-                usePageStore.setState({
-                    isLoggedIn: true
-                })
-            }).catch(err => {
-                console.log(err.message)
-            })
-            navigate('/', { replace: true })
-        })
+        const register = await http.post('/api/register', creds)
+        if(register.status===200){
+            const userRes = await http.get('/api/user');
+                if (userRes.status === 200) {
+                    usePageStore.setState({
+                        isLoggedIn: true,
+                        user: userRes.data
+                    })
+                } else console.log(userRes.data)
+                const roleRes = await http.get('/api/user/role');
+                if (roleRes.status === 200) {
+                    usePageStore.setState({
+                        role: roleRes.data
+                    })
+                } else console.log(userRes.data)
+                navigate('/')
+        } else console.log(register)
     }
 
     const handleSubmit = (e) => {

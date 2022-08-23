@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\VerifyUser;
+use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Hash;
-// use Carbon\Carbon;
+use Mail;
+use Str;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -27,11 +31,29 @@ class AuthController extends Controller
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
-
+        $verifiedUser = VerifyUser::create([
+            'token' => Str::random(60),
+            'user_id' => $user->id
+        ]);
+        Mail::to($user->email)->send(new VerifyEmail($user));
+        $user->assignRole('Employee');
         Auth::login($user);
+        return response()->json($verifiedUser);
+    }
 
-        return response()->json('User created successfully!', 201);
-        
+    public function verifyEmail($token){
+        $verifiedUser = VerifyUser::where('token', $token)->first();
+        if(isset($verifiedUser)){
+            $user = $verifiedUser->user;
+            if(!$user->email_verified_at){
+                $user->email_verified_at = Carbon::now();
+                $user->save();
+                Auth::login($user);
+                return redirect('/');
+            } else return response()->json("Your email has already been verified.");
+        } else {
+            return redirect('/login')->with('Something went wrong.');
+        }
     }
 
     public function login(Request $request)

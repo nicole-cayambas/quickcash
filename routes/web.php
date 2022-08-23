@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoanController;
 
 /*
@@ -29,6 +30,8 @@ Route::get('loans/{id}/status', function($id){
     return $loan->status();
 });
 
+
+Route::get('/confirm/{token}', [AuthController::class, 'verifyEmail']);
 
 Route::any('/{any}', function(){
     return view('main');

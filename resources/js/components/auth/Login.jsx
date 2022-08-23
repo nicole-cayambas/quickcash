@@ -32,7 +32,7 @@ const Login = () => {
                         role: roleRes.data
                     })
                 } else console.log(userRes.data)
-                navigate('/', { replace: true })
+                navigate('/')
             }
             
         }

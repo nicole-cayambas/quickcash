@@ -17,11 +17,17 @@ class LoanController_Employee extends Controller
      */
     public function index()
     {
-        $loans = auth()->user()->account->loans()->get();
-        foreach($loans as $loan){
-            $loan['status'] = $loan->status();
-        }
-        return response()->json($loans, 200);
+        $account = auth()->user()->account;
+        if($account){
+            $loans = $account->loans()->get();
+            if($loans){
+                foreach($loans as $loan){
+                    $loan['status'] = $loan->status();
+                }
+                return response()->json($loans, 200);
+            } else return response()->json('No loans on account.');
+        } else return response()->json([]);
+        
     }
 
     /**
