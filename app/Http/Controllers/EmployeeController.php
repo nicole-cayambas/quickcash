@@ -9,10 +9,6 @@ use Hash;
 
 class EmployeeController extends Controller
 {
-
-    public function test() {
-        return response()->json(User::all(), 200);
-    }
     /**
      * Display a listing of the resource.
      *

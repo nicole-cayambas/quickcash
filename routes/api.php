@@ -25,6 +25,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user/account', function (Request $request) {
         return $request->user()->account;
     });
+
+    Route::get('loans/{id}/status', function($id){
+        $loan = App\Models\Loan::findOrFail($id);
+        return $loan->status();
+    });
     
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('companies', [CompanyController::class, 'index']); // BALIK
@@ -45,7 +50,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['role:Owner|Administrator']], function () {
         // LOAN ROUTES
         Route::resource('loans', LoanController::class);
-        Route::put('loans/{id}/acknowledge', [LoanController::class, 'acknowledge']); // TODO
 
         // COMPANY ROUTES
         Route::post('companies', [CompanyController::class, 'store']);
@@ -71,7 +75,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('payroll/loans/{id}', [LoanController_Payroll::class, 'show']);
         Route::post('payroll/loans', [LoanController_Payroll::class, 'store']);
         Route::put('payroll/loans/{id}', [LoanController_Payroll::class, 'update']);
-        Route::put('payroll/loans/{id}/status', [LoanController_Payroll::class, 'setStatus']);
 
         Route::put('employees/{id}/verify', [EmployeeController::class, 'verify']);
         Route::put('employees/{id}/deactivate', [EmployeeController::class, 'deactivate']);
@@ -89,8 +92,3 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
-
-// Route::get('employees/test', [EmployeeController::class, 'test']);
-// Route::get('companies/test', [CompanyController::class, 'test']);
-// Route::get('employee/loans', [LoanController_Employee::class, 'index']); 
-// Route::get('user/account', [AccountController::class, 'show']); 

@@ -11,6 +11,7 @@ import Companies from './pages/Companies';
 import PayrollOfficers from './pages/PayrollOfficers';
 import Administrators from './pages/Administrators';
 import Employees from './pages/Employees';
+import Accounts from './pages/Accounts';
 import Loans from './pages/Loans';
 import CreateLoan from './pages/CreateLoan';
 import Login from './auth/Login';
@@ -86,7 +87,7 @@ const PayrollRoutes = () => {
     <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/receivables" element={<Receivables />} />
-        <Route path="/employees" element={<Employees />} />
+        <Route path="/accounts" element={<Accounts />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
     </Routes>

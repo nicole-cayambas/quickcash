@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react"
 import http from "../http"
 import { usePageStore } from "../stateman"
 
-import { Typography, Stack, Card, CardContent, TextField, Button, Box } from '@mui/material'
+import { Typography, Stack, Card, CardContent, TextField, Button, Box, Alert, FormControl, Select, InputLabel, MenuItem } from '@mui/material'
+
 import moment from "moment"
 
 const CreateLoan = () => {
@@ -17,6 +18,7 @@ const CreateLoan = () => {
     const [amortizations, setAmortizations] = useState(6)
     const [percentage, setPercentage] = useState(5)
     const [message, setMessage] = useState("")
+    const [status, setStatus] = useState("Pending")
     
 
     useEffect(() => {
@@ -46,6 +48,10 @@ const CreateLoan = () => {
         setMonthly(Number(totalAmount/amortizations).toFixed(2))
     }, [totalAmount])
 
+    useEffect(() => {
+        if (loanDate===null) document.getElementById('loan_date').value = ""
+    }, [loanDate])
+
     const changeAmount = (e) => {
         const re = /^\d+(,\d{3})*(\.\d*)?$/
         if(e.target.value === '' || re.test(e.target.value)){
@@ -61,7 +67,8 @@ const CreateLoan = () => {
             loan_date: moment(loanDate).format("YYYY-MM-DD"),
             amortizations: amortizations,
             percentage: percentage,
-            account_id: accountID
+            account_id: accountID,
+            status: status
         }
 
         if (role === 'Employee') http.post('/api/employee/loans', request).then((res) => {
@@ -74,19 +81,20 @@ const CreateLoan = () => {
             setMessage(res.data)
         }).catch((err) => {setMessage(err.response.data.message)})
 
-
         setAmount(0)
         setLoanDate(null)
     }
+
     return (
         <Box component={"form"} onSubmit={handleSubmit} display="flex" justifyContent="space-evenly" alignItems="flex-start" flexDirection="row" flexWrap={'wrap'} height="100%">
             <Card sx={{ minWidth: 400 }} raised={true} >
                 <CardContent>
                 <Stack spacing="20px">
-                    {role==="Employee" ? <Typography variant="h5">Apply for a Loan</Typography> : <Typography variant="h5">Create a Loan</Typography> }
-                    {message ? <Typography id="message" variant="body1">{message}</Typography> : null}
+                    <ShowCreateLoan role={role}/>
+                    {message ? <Alert severity="info">{message}</Alert> : null}
                     <TextField required id="amount" label="Amount" name="amount" onChange={changeAmount}/>
                     <TextField type={'date'} required helperText="Loan Date" id="loan_date" name="loan_date" onChange={(e)=>{setLoanDate(e.target.value)}}/>
+                    <StatusSelector role={role} onChangeFn={(e) => {setStatus(e.target.value)}} status={status}/>
                     <Button fullWidth variant={"contained"} size="large" type={"submit"} > Submit </Button>
                 </Stack>
                 </CardContent>
@@ -118,4 +126,35 @@ const CustomTypography = (props) => {
             {text}: {data ? data : null}
         </Typography>
     )
+}
+
+const ShowCreateLoan = (props) => {
+    const role = props.role
+    let cta
+    if(role==="Employee"){
+        cta = "Apply for a Loan"
+    } else cta = "Create Loan"
+    return <Typography variant="h5">{cta}</Typography>
+}
+
+const StatusSelector = (props) => {
+    const {role, onChangeFn, status} = props
+    if(role!=="Employee"){
+        return (
+            <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
+                    value={status}
+                    label="Status"
+                    onChange={onChangeFn}
+                >
+                    <MenuItem value={"Pending"}>Pending</MenuItem>
+                    <MenuItem value={"Approved"}>Approved</MenuItem>
+                    <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                    <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
+                    <MenuItem value={"Completed"}>Completed</MenuItem>
+                </Select>
+            </FormControl>
+        )
+    } return null
 }

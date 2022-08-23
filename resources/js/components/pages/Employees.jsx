@@ -1,5 +1,5 @@
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import http from '../http'
 
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
@@ -46,7 +46,7 @@ const Employees = () => {
             page: 'Employees'
         })
 
-        axios.get('/api/employees/test').then(res => { 
+        http.get('/api/employees/test').then(res => { 
             setEmployees(res.data)
         }).catch(err => {
             console.log(err.message)

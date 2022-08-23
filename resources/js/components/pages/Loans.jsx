@@ -13,8 +13,7 @@ const Loans = () => {
     const [loans, setLoans] = useState([])
     const { isLoggedIn, role } = usePageStore()
     if (isLoggedIn) {
-
-        const columns = [
+        var columns = [
             { field: 'id', headerName: 'ID', width: 40 },
             {
                 field: 'amount',
@@ -56,7 +55,12 @@ const Loans = () => {
                 field: 'monthly',
                 headerName: 'Monthly',
                 width: 150
-            }
+            },
+            {
+                field: 'status',
+                headerName: 'Status',
+                width: 150,
+            },{field:'action', headerName:'Action', width: 150}
         ]
 
         let rows = [];
@@ -72,7 +76,9 @@ const Loans = () => {
             let loansData
             if (role === 'Employee') loansData = await http.get('/api/employee/loans')
             else if (role === 'Administrator' || role === "Owner") loansData = await http.get('/api/loans')
-            else if (role === 'Payroll_Officer') loansData = await http.get('/api/payroll/loans')
+            else if (role === 'Payroll_Officer') {
+                loansData = await http.get('/api/payroll/loans')
+            }
             setLoans(loansData.data)
         }
 
@@ -90,7 +96,9 @@ const Loans = () => {
                 total_interest_rate: total_interest_rate.toFixed(2) + "%",
                 total_interest: "Php " + total_interest.toFixed(2),
                 total_amount: "Php " + total_amount.toFixed(2),
-                monthly: "Php " + monthly.toFixed(2)
+                monthly: "Php " + monthly.toFixed(2),
+                status: loan.status,
+                // action: NICOLE YOURE HERE
             }
         })
         

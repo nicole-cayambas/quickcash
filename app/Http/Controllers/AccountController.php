@@ -63,7 +63,7 @@ class AccountController extends Controller
         ]);
         $account = Account::findOrFail($id);
         $account->update($validatedData);
-        return response()->json($account, 200);
+        return response()->json('Account Updated', 204);
     }
 
     /**

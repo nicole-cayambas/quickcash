@@ -15,7 +15,11 @@ class LoanController extends Controller
      */
     public function index()
     {
-        return response()->json(Loan::all(), 200);
+        $loans = Loan::all();
+        foreach($loans as $loan){
+            $loan['status'] = $loan->status();
+        }
+        return response()->json($loans, 200);
     }
 
     /**
@@ -26,19 +30,22 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'amount' => 'required|numeric',
             'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
-            // 'total_interest_rate' => 'required|numeric|between:0,100',
-            // 'company_id' => 'required|exists:companies,id',
             'account_id' => 'required|exists:accounts,id',
+            'status'=> 'string|exists:statuses,name'
         ]);
-        $loan = Loan::create($request->all());
-        $loan->setStatus('Pending');
-        $loan->save();
-        return response()->json($loan, 201);
+        if(!$request->status_desc){
+            $validatedData['status_desc'] = null;
+        }
+        $loan = Loan::create($validatedData);
+        if($request->status){
+            $loan->setStatus($validatedData['status'], $validatedData['status_desc']);
+        }
+        return response()->json('Loan Created!', 201);
     }
 
     /**
@@ -49,7 +56,9 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        return Loan::findOrFail($id);
+        $loan = Loan::findOrFail($id);
+        $loan['status'] = $loan->status();
+        return response()->json($loan, 200);
     }
 
     /**
@@ -61,19 +70,23 @@ class LoanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'amount' => 'sometimes|required|numeric',
             'loan_date' => 'sometimes|required|date|after:yesterday',
             'amortizations' => 'sometimes|required|numeric',
             'percentage' => 'sometimes|required|numeric|between:0,100',
-            // 'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
-            // 'company_id' => 'sometimes|required|exists:companies,id',
             'account_id' => 'sometimes|required|exists:accounts,id',
+            'status' => 'string|exists:statuses,name',
         ]);
-
+        if(!$request->status_desc){
+            $validatedData['status_desc'] = null;
+        }
         $loan = Loan::findOrFail($id);
-        $loan->update($request->all());
-        return response()->json($loan, 200);
+        if($request->status){
+            $loan->setStatus($validatedData['status'], $validatedData['status_desc']);
+        }
+        $loan->update($validatedData);
+        return response()->json('Loan Update!', 204);
     }
 
     /**
@@ -87,7 +100,5 @@ class LoanController extends Controller
         Loan::findOrFail($id)->delete();
         return response()->json('Loan deleted.', 204);
     }
-
-
     
 }

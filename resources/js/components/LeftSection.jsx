@@ -116,7 +116,7 @@ function PayrollList () {
         <List>
             <CustomLinkButton to="/">Home</CustomLinkButton>
             <CustomLinkButton to="/receivables">Receivables</CustomLinkButton>
-            <CustomLinkButton to="/employees">Employees</CustomLinkButton>
+            <CustomLinkButton to="/accounts">Accounts</CustomLinkButton>
             <CustomLinkButton to="/loans">Loans</CustomLinkButton>
             <Divider />
             <LogoutButton />
