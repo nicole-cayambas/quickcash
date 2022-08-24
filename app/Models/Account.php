@@ -12,8 +12,11 @@ class Account extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
         'company_id',
         'balance',
+        'address',
+        'phone'
         // 'capital', // move to company
     ];
 

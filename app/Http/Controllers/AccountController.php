@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Account;
+use App\Models\Company;
 
 class AccountController extends Controller
 {
@@ -15,10 +16,17 @@ class AccountController extends Controller
     public function index()
     {
         if(auth()->user()->hasRole('Payroll_Officer')){
-            return response()->json(auth()->user()->company->accounts()->get(), 200);
+            $accounts = auth()->user()->company->accounts()->get();
+            foreach($accounts as $account){
+                $account['company_name'] = auth()->user()->company->name;
+            }
+        } else {
+            $accounts = Account::all();
+            foreach($accounts as $account){
+                $account['company_name'] = Company::find($account->company_id)->name;
+            }
         }
-
-        return response()->json(Account::all()->groupBy('company_id'), 200);
+        return response()->json($accounts, 200);
     }
 
 
@@ -59,11 +67,37 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'capital' => 'sometimes|required|numeric',
+            'name' => 'sometimes|required|string',
+            'address' => 'sometimes|required|string',
+            'phone' => 'sometimes|required|string'
         ]);
         $account = Account::findOrFail($id);
         $account->update($validatedData);
         return response()->json('Account Updated', 204);
+    }
+
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'company_id' => 'integer|required',
+            'user_id' => 'integer'
+        ]);
+        $user = auth()->user();
+        if($user->hasRole('Employee')){
+            $account = $user->account()->create($validatedData);
+            $user->account_id = $account->id;
+            $user->save();
+            return response()->json('Account created successfully!', 201);
+        } else {
+            if($user->hasRole('Payroll_Officer')){
+                $validatedData['company_id'] = $user->company_id;
+            }
+            $account = Account::create($validatedData);
+            $account->setStatus('Verified');
+        }
+        return response()->json('Account created successfully!', 201);
     }
 
     /**

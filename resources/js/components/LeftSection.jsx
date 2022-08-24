@@ -88,7 +88,7 @@ function OwnerList() {
             <CustomLinkButton to="/companies">Companies</CustomLinkButton>
             <CustomLinkButton to="/payroll_officers">Payroll Officers</CustomLinkButton>
             <CustomLinkButton to="/administrators">Administrators</CustomLinkButton>
-            <CustomLinkButton to="/employees">Employees</CustomLinkButton>
+            <CustomLinkButton to="/accounts">Accounts</CustomLinkButton>
             <CustomLinkButton to="/loans">Loans</CustomLinkButton>
             <Divider />
             <LogoutButton />
@@ -103,7 +103,7 @@ function AdminList() {
             <CustomLinkButton to="/receivables">Receivables</CustomLinkButton>
             <CustomLinkButton to="/companies">Companies</CustomLinkButton>
             <CustomLinkButton to="/payroll_officers">Payroll Officers</CustomLinkButton>
-            <CustomLinkButton to="/employees">Employees</CustomLinkButton>
+            <CustomLinkButton to="/accounts">Accounts</CustomLinkButton>
             <CustomLinkButton to="/loans">Loans</CustomLinkButton>  
             <Divider />
             <LogoutButton />

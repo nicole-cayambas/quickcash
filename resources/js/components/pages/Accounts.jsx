@@ -10,7 +10,6 @@ import moment from 'moment'
 
 const Accounts = () => {
     const [accounts, setAccounts] = useState([])
-    const [company, setCompany] = useState("")
     const {role} = usePageStore()
     
     const getAccounts = async () => {
@@ -36,16 +35,14 @@ const Accounts = () => {
             headerName: 'Updated At',
             width: 200
         },
+        {field: 'company', headerName: 'Company', width: 200}
     ]
     var rows = []
     rows = accounts?.map((account) => {
-        if(role!=="Payroll_Officer"){
-            http.get('api/companies/'+account.company_id).then((res) => {setCompany(res.data.name); console.log(company)})
-        } 
         return {
             id: account.id,
             balance: account.balance,
-            company: company,
+            company: account.company_name,
             created_at: moment(account.created_at).format("MMM Do YYYY"),
             updated_at: moment(account.udpdated_at).format("MMM Do YYYY"),
         }
@@ -56,9 +53,6 @@ const Accounts = () => {
             page: 'Accounts'
         })
         getAccounts()
-        if(role!=="Payroll_Offcier"){
-            columns.push({field: 'company', headerName: 'Company', width: 200})
-        }
     }, [])
 
     return (

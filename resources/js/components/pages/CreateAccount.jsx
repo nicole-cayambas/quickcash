@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
+import {useNavigate} from 'react-router-dom'
 import http from '../http'
 import { usePageStore } from '../stateman'
-import {Box, Card, CardContent, Stack, Typography, TextField, Autocomplete, Button} from '@mui/material'
-import { indexOf } from 'lodash'
+import {Box, Card, CardContent, Stack, Typography, TextField, Autocomplete, Button, Alert} from '@mui/material'
 
 const CreateAccount = () => {
     const [company, setCompany] = useState('')
@@ -11,6 +11,7 @@ const CreateAccount = () => {
     const [phone, setPhone] = useState('')
     const [message, setMessage] = useState('')
     const {role, user} = usePageStore()
+    const navigate = useNavigate()
     var companyNames = []
 
     useEffect(() => {
@@ -19,14 +20,6 @@ const CreateAccount = () => {
         })
         getCompanies()
     }, [])
-
-    useEffect(()=> {
-        console.log(company)
-    }, [company])
-
-    useEffect(()=> {
-        console.log(phone)
-    }, [phone])
 
     companies.forEach((company)=>{companyNames.push(company.name)})
     
@@ -37,24 +30,34 @@ const CreateAccount = () => {
         } else console.log(res)
     }
 
-    const changePhone = (e) => { //BOOKMARK
-    }
-
     const selectCompany = (e) => {
         const i = companyNames.indexOf(e.target.value)
         setCompany(companies[i])
     }
 
     const handleSubmit = (e) => {
+        e.preventDefault()
+        const request = {
+            company_id: company.id,
+            name: user.first_name + ' ' + user.last_name,
+            address: address,
+            phone: phone
+        }
         
+        if(role==="Employee"){
+            http.post('api/account/apply', request).then((res)=> {
+                setMessage(res.data)
+                navigate('/loans')
+            }).catch(err => console.log(err))
+        }
+
     }
     return (
         <Box component={"form"} onSubmit={handleSubmit} display="flex" justifyContent="center" alignItems="center" height="100%">
             <Card sx={{ minWidth: 600 }} raised={true} >
                 <CardContent>
                 <Stack spacing="20px">
-                    <Typography variant="h5">{user.is_verified ? null : "Apply for an Account" }</Typography>
-                    <Typography variant="h5">{role==="Employee" ? "Apply for an Account" : null }</Typography>
+                    <Typography variant="h5">{role==="Employee" ? "Apply for an Account" : "Create Account" }</Typography>
                     {message ? <Alert severity="info">{message}</Alert> : null}
                     <Autocomplete
                         onSelect={selectCompany}
@@ -65,7 +68,7 @@ const CreateAccount = () => {
                     />
                     <TextField label="Account Name" name="account_name" value={user.first_name + ' ' + user.last_name} disabled/>
                     <TextField label="Address" name="address" required onChange={(e) => {setAddress(e.target.value)}}/>
-                    <TextField label="Phone" name="phone" required onChange={changePhone}/>
+                    <TextField label="Phone" name="phone" required onChange={(e)=> {setPhone(e.target.value)}}/>
                     <Button fullWidth variant={"contained"} size="large" type={"submit"} > Submit </Button>
                 </Stack>
                 </CardContent>

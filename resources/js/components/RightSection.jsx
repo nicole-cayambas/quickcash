@@ -62,7 +62,7 @@ const OwnerRoutes = () => {
         <Route path="/companies" element={<Companies />} />
         <Route path="/payroll_officers" element={<PayrollOfficers />} />
         <Route path="/administrators" element={<Administrators />} />
-        <Route path="/employees" element={<Employees />} />
+        <Route path="/Accounts" element={<Accounts />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
     </Routes>
@@ -76,7 +76,7 @@ const AdminRoutes = () => {
         <Route path="/receivables" element={<Receivables />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/payroll_officers" element={<PayrollOfficers />} />
-        <Route path="/employees" element={<Employees />} />
+        <Route path="/accounts" element={<Accounts />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
         <Route path="/accounts/create" element={<CreateAccount />} />

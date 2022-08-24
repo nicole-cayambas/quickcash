@@ -15,7 +15,6 @@ use App\Http\Controllers\LoanController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('payroll/loans/test', function (Request $request) {
 
     $user = App\Models\User::find(3);

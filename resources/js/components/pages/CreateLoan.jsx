@@ -8,8 +8,9 @@ import StatusSelector from "../StatusSelector"
 import moment from "moment"
 
 const CreateLoan = () => {
-    const { role } = usePageStore()
-    const [accountID, setAccountID] = useState(0)
+    const { role, user } = usePageStore()
+    const [account, setAccount] = useState(0)
+    const [accounts, setAccounts] = useState([])
     const [amount, setAmount] = useState(null)
     const [loanDate, setLoanDate] = useState(null)
     const [monthly, setMonthly] = useState(0)
@@ -26,13 +27,20 @@ const CreateLoan = () => {
         usePageStore.setState({
             page: 'Create Loan'
         })
-        getAccountID()
+        getAccount()
     }, [])
 
-    const getAccountID = async() => {
-        const account = await http.get('/api/user/account')
-        if(account.status == 200){
-            setAccountID(account.data.id)
+    const getAccount = async() => {
+        if(role==="Employee"){
+            const accountres = await http.get('/api/user/account')
+            if(account.status == 200){
+                setAccount(accountres.data.id)
+            }
+        } else {
+            const accountsres = await http.get('api/accounts')
+            if(accountsres.status == 200){
+                setAccount(accountsres.data)
+            }
         }
     }
 
@@ -60,15 +68,20 @@ const CreateLoan = () => {
         } else e.target.value = ''
     }
 
+    const changeAccount = (e) => {
+        setAccountName(e.target.value)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
+        const account_id = account !== 0 ? account : user.account_id
         const request = {
             amount: amount,
             interest_rate: interestRate,
             loan_date: moment(loanDate).format("YYYY-MM-DD"),
             amortizations: amortizations,
             percentage: percentage,
-            account_id: accountID,
+            account_id: account_id,
             status: status
         }
 
@@ -88,8 +101,9 @@ const CreateLoan = () => {
             <Card sx={{ minWidth: 400 }} raised={true} >
                 <CardContent>
                 <Stack spacing="20px">
-                    <ShowCreateLoan role={role}/>
+                    <Typography variant="h5">{ role==="Employee" ? "Apply For a Loan" : "Create Loan" }</Typography>
                     {message ? <Alert severity="info">{message}</Alert> : null}
+                    { role!=="Employee" ? <TextField required id="account" label="Account Name" name="account" onChange={changeAccount}/> : null }
                     <TextField required id="amount" label="Amount" name="amount" onChange={changeAmount}/>
                     <TextField type={'date'} required helperText="Loan Date" id="loan_date" name="loan_date" onChange={(e)=>{setLoanDate(e.target.value)}}/>
                     <StatusSelector role={role} onChangeFn={(e) => {setStatus(e.target.value)}} status={status} cta="Status"/>
@@ -124,13 +138,4 @@ const CustomTypography = (props) => {
             {text}: {data ? data : null}
         </Typography>
     )
-}
-
-const ShowCreateLoan = (props) => {
-    const role = props.role
-    let cta
-    if(role==="Employee"){
-        cta = "Apply for a Loan"
-    } else cta = "Create Loan"
-    return <Typography variant="h5">{cta}</Typography>
 }

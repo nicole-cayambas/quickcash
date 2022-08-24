@@ -19,10 +19,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         return $request->user()->getRoleNames()->first();
     });
     Route::get('user/account', function (Request $request) {
-        return $request->user()->account->get();
-    }); 
-
-    Route::get('user/account', function (Request $request) {
         return $request->user()->account;
     });
 
@@ -32,12 +28,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('companies', [CompanyController::class, 'index']); // BALIK
-    Route::get('companies/{id}', [CompanyController::class, 'show']); // BALIK
+    Route::get('companies', [CompanyController::class, 'index']);
+    Route::get('companies/{id}', [CompanyController::class, 'show']); // no frontend
 
     Route::group(['middleware' => ['role:Owner|Administrator|Payroll_Officer']], function () {
         // EMPLOYEE ROUTES
-        Route::resource('employees', EmployeeController::class); // IBALIK MOTO
+        Route::resource('employees', EmployeeController::class);
         Route::put('employees/{id}/resetPassword', [EmployeeController::class, 'resetPassword']); // TODO
 
 
@@ -86,6 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('employee/loans', [LoanController_Employee::class, 'store']);
 
         Route::get('account', [AccountController::class, 'showOne']);
+        Route::post('account/apply', [AccountController::class, 'store']);
     });
     
 });

@@ -4,18 +4,22 @@ import http from '../http'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import {NavLink} from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { DataGrid } from '@mui/x-data-grid'
 import moment from 'moment'
 
 import { usePageStore } from '../stateman'
+import { Alert, MenuItem, Select } from '@mui/material'
+import { Co2Sharp } from '@mui/icons-material'
 
 const Loans = () => {
     const [loans, setLoans] = useState([])
-    const [status, setStatus] = useState("")
+    const [statusChange, setStatusChange] = useState("")
+    const [message, setMessage] = useState("")
+    // const [selectedLoan, setSelectedLoan] = useState({})
     const { isLoggedIn, role, user } = usePageStore()
     if (isLoggedIn) {
-        var columns = [
+        const columns = [
             { field: 'id', headerName: 'ID', width: 40 },
             {
                 field: 'amount',
@@ -25,7 +29,10 @@ const Loans = () => {
             {
                 field: 'loan_date',
                 headerName: 'Loan Date',
-                width: 120
+                width: 120,
+                renderCell: (params) => {
+                    return moment(params.row.loan_date).format("MMM Do YYYY")
+                }
             },
             {
                 field: 'amortizations',
@@ -41,42 +48,69 @@ const Loans = () => {
             {
                 field: 'total_interest_rate',
                 headerName: 'Total Interest Rate',
-                width: 150
+                width: 150,
+                renderCell: params => `${(params.row.amortizations * parseInt(params.row.percentage)).toFixed(2)} %`
             },
             {
                 field: 'total_interest',
                 headerName: 'Total Interest',
-                width: 150
+                renderCell: (params) => {
+                    const val = ((parseInt(params.row.amortizations) * parseInt(params.row.percentage))/100) * parseInt(params.row.amount);
+                    return(
+                        `${val.toFixed(2)}`
+                    )
+                }
             },
             {
                 field: 'total_amount',
                 headerName: 'Total Amount',
-                width: 150
+                width: 150,
+                renderCell: (params) => {
+                    const total_interest = ((parseInt(params.row.amortizations) * parseInt(params.row.percentage))/100) * parseInt(params.row.amount)
+                    return (total_interest + parseInt(params.row.amount)).toFixed(2)
+                }
             },
             {
                 field: 'monthly',
                 headerName: 'Monthly',
-                width: 150
-            },
-            {
-                field: 'status',
-                headerName: 'Status',
-                width: 100,
-            },
-            {
-                field:'action', 
-                headerName:'Action', 
                 width: 150,
-                renderCell: (props) => {
-                    const changeStatus = (e) => {
-                        console.log(e.target.value) //BOOKMARK
-                    }
-                    return <StatusSelector role={props.role} onChangeFn={changeStatus} cta="Edit Status"/>
+                renderCell: (params) => {
+                    const total_amount = (((parseInt(params.row.amortizations) * parseInt(params.row.percentage))/100) * parseInt(params.row.amount))+parseInt(params.row.amount)
+                    return (total_amount/params.row.amortizations).toFixed(2)
                 }
-            }
+            },
+            {
+                field: 'edit_status',
+                headerName: 'Edit Status',
+                hide: false,
+                renderCell: (params) => {
+                    return(
+                        <Select label="Status" onChange={(e, id) => changeStatus(e.target.value, params.row.id)} value={params.row.status || "Pending"}>
+                            <MenuItem value={"Pending"}>Pending</MenuItem>
+                            <MenuItem value={"Approved"}>Approved</MenuItem>
+                            <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                            <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
+                            <MenuItem value={"Completed"}>Completed</MenuItem>
+                        </Select>
+                    )
+                }
+            },
         ]
 
-        let rows = [];
+        const changeStatus = (value, loan_id) => {
+            const request = {
+                status: value
+            }
+            if(role!=="Employee"){
+                http.put(`api/loans/${loan_id}`, request).then((res)=>{
+                    setMessage(res.status===204 ? `Loan with ID of ${loan_id} is updated.` : null)
+                })
+            } else {
+                http.put(`api/payroll/loans/${loan_id}`, request).then((res)=> {
+                    setMessage(res.status===204 ? `Loan with ID of ${loan_id} is updated.` : null)
+                })
+            }
+        }
 
         useEffect(() => {
             usePageStore.setState({
@@ -87,39 +121,22 @@ const Loans = () => {
 
         const getLoans = async () => {
             let loansData
-            if (role === 'Employee') loansData = await http.get('/api/employee/loans')
-            else if (role === 'Administrator' || role === "Owner") loansData = await http.get('/api/loans')
-            else if (role === 'Payroll_Officer') {
-                loansData = await http.get('/api/payroll/loans')
+            if(user.account_id !== null){
+                if (role === 'Employee') loansData = await http.get('/api/employee/loans')
+                else if (role === 'Administrator' || role === "Owner") loansData = await http.get('/api/loans')
+                else if (role === 'Payroll_Officer') {
+                    loansData = await http.get('/api/payroll/loans')
+                }
+                setLoans(loansData.data)
             }
-            setLoans(loansData.data)
         }
 
-        rows = loans?.map((loan) => {
-            const total_interest_rate = loan.percentage * loan.amortizations
-            const total_interest = Number((total_interest_rate / 100) * loan.amount)
-            const total_amount = total_interest + Number(loan.amount)
-            const monthly = total_amount / loan.amortizations
-            console.log(loan.status)
-            return {
-                id: loan.id,
-                amount: loan.amount,
-                loan_date: moment(loan.loan_date).format("MMM Do YYYY"),
-                amortizations: loan.amortizations,
-                percentage: loan.percentage + "%",
-                total_interest_rate: total_interest_rate.toFixed(2) + "%",
-                total_interest: "Php " + total_interest.toFixed(2),
-                total_amount: "Php " + total_amount.toFixed(2),
-                monthly: "Php " + monthly.toFixed(2),
-                status: loan.status,
-            }
-        })
-        
         return (
             <Box sx={{ height: '80vh', width: '100%' }}>
-                <CreateLoanButton role={role} is_verified={user.is_verified}/>
+                <CreateLoanButton role={role} has_account={user.account_id !== null} />
+                {message ? <Alert severity="info">{message}</Alert> : null}
                 <DataGrid
-                    rows={rows}
+                    rows={loans}
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[10]}
@@ -141,10 +158,10 @@ const Loans = () => {
 export default Loans
 
 const CreateLoanButton = (props) => {
-    const { role, is_verified } = props
-    if(role!=="Employee"){
+    const { role, has_account } = props
+    if (role !== "Employee") {
         return <Button component={NavLink} to="/loans/create" variant="contained" color="primary"> Create Loan </Button>
-    } else if(!is_verified){
+    } else if (!has_account) {
         return <Button component={NavLink} to="/accounts/create" variant="contained" color="primary"> Apply For an Account </Button>
     } else {
         return <Button component={NavLink} to="/loans/create" variant="contained" color="primary"> Apply For a Loan </Button>

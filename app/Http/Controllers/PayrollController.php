@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Company;
 use Hash;
 
 class PayrollController extends Controller
@@ -15,7 +16,11 @@ class PayrollController extends Controller
      */
     public function index()
     {
-        return response()->json(User::role('Payroll_Officer')->get()->groupBy('company_id'), 200);
+        $payrolls = User::role('Payroll_Officer')->get();
+        foreach($payrolls as $payroll){
+            $payroll['company_name'] = Company::findOrFail($payroll->company_id)->name;
+        }
+        return response()->json($payrolls, 200);
     }
 
     /**

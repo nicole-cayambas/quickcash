@@ -16,8 +16,11 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->string('name');
             $table->foreignId('company_id')->constrained('companies');
             $table->decimal('balance', 10, 2)->nullable();
+            $table->string('address');
+            $table->string('phone');
             // $table->decimal('capital', 10, 2);
             $table->timestamps();
         });

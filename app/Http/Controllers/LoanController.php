@@ -19,6 +19,7 @@ class LoanController extends Controller
         foreach($loans as $loan){
             $loan['status'] = $loan->status();
         }
+        
         return response()->json($loans, 200);
     }
 
@@ -86,7 +87,7 @@ class LoanController extends Controller
             $loan->setStatus($validatedData['status'], $validatedData['status_desc']);
         }
         $loan->update($validatedData);
-        return response()->json('Loan Update!', 204);
+        return response()->json('Loan Updated!', 204);
     }
 
     /**
