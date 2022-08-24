@@ -30,14 +30,9 @@ const App = () => {
         if (user.status === 200) {
             usePageStore.setState({
                 isLoggedIn: true,
-                user: user.data
+                user: user.data,
+                role: user.data.role
             })
-            const role = await http.get('/api/user/role')
-            if(role.status === 200){
-                usePageStore.setState({
-                    role: role.data
-                })
-            }
         } else if(user.status===401){
             console.log('Unauthorized')
         }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import StatusSelector from "../StatusSelector"
 import http from '../http'
 
 import Box from '@mui/material/Box'
@@ -10,17 +9,35 @@ import moment from 'moment'
 
 import { usePageStore } from '../stateman'
 import { Alert, MenuItem, Select } from '@mui/material'
-import { Co2Sharp } from '@mui/icons-material'
 
 const Loans = () => {
     const [loans, setLoans] = useState([])
-    const [statusChange, setStatusChange] = useState("")
     const [message, setMessage] = useState("")
-    // const [selectedLoan, setSelectedLoan] = useState({})
     const { isLoggedIn, role, user } = usePageStore()
+    useEffect(()=>{
+        usePageStore.setState({
+            page: 'Loans'
+        })
+    }, [])
+    
     if (isLoggedIn) {
+        useEffect(() => {
+            getLoans()
+        }, [message])
+        
         const columns = [
-            { field: 'id', headerName: 'ID', width: 40 },
+            {   field: 'account_name', 
+                headerName:'Account',
+                width: 200,
+                renderCell: params => params.row.account.name
+            },
+            {
+                field: 'company_name',
+                headerName: 'Company',
+                width: 200,
+                hide: role!=="Owner" || role!=="Administrator" ? true : false,
+                renderCell: role==="Owner" || role==="Administrator" ? params => params.row.company.name : null
+            },
             {
                 field: 'amount',
                 headerName: 'Amount',
@@ -43,7 +60,8 @@ const Loans = () => {
             {
                 field: 'percentage',
                 headerName: 'Percentage',
-                width: 120
+                width: 120,
+                renderCell: (params) => `${params.row.percentage} %`
             },
             {
                 field: 'total_interest_rate',
@@ -55,9 +73,9 @@ const Loans = () => {
                 field: 'total_interest',
                 headerName: 'Total Interest',
                 renderCell: (params) => {
-                    const val = ((parseInt(params.row.amortizations) * parseInt(params.row.percentage))/100) * parseInt(params.row.amount);
+                    const total_interest_rate = params.row.amortizations * parseInt(params.row.percentage)
                     return(
-                        `${val.toFixed(2)}`
+                        `${((total_interest_rate/100)* parseInt(params.row.amount)).toFixed(2)}`
                     )
                 }
             },
@@ -66,7 +84,8 @@ const Loans = () => {
                 headerName: 'Total Amount',
                 width: 150,
                 renderCell: (params) => {
-                    const total_interest = ((parseInt(params.row.amortizations) * parseInt(params.row.percentage))/100) * parseInt(params.row.amount)
+                    const total_interest_rate = params.row.amortizations * parseInt(params.row.percentage)
+                    const total_interest = (total_interest_rate/100) * parseInt(params.row.amount)
                     return (total_interest + parseInt(params.row.amount)).toFixed(2)
                 }
             },
@@ -80,12 +99,23 @@ const Loans = () => {
                 }
             },
             {
+                field: 'status',
+                headerName: 'Status',
+                width: 150,
+                hide: role==="Employee" ? false : true 
+            },
+            {
                 field: 'edit_status',
                 headerName: 'Edit Status',
-                hide: false,
+                hide: role === "Employee" ? true : false,
+                width: 180,
+                valueGetter: params => params.row.edit_status,
+                valueSetter: params => {
+                    params.row.edit_status = params.newValue
+                },
                 renderCell: (params) => {
                     return(
-                        <Select label="Status" onChange={(e, id) => changeStatus(e.target.value, params.row.id)} value={params.row.status || "Pending"}>
+                        <Select size="small" label="Status" onChange={(e, id) => changeStatus(e.target.value, params.row.id)} value={params.row.status || "Pending"}>
                             <MenuItem value={"Pending"}>Pending</MenuItem>
                             <MenuItem value={"Approved"}>Approved</MenuItem>
                             <MenuItem value={"Rejected"}>Rejected</MenuItem>
@@ -111,13 +141,6 @@ const Loans = () => {
                 })
             }
         }
-
-        useEffect(() => {
-            usePageStore.setState({
-                page: 'Loans'
-            })
-            getLoans()
-        }, [])
 
         const getLoans = async () => {
             let loansData

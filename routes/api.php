@@ -14,7 +14,11 @@ use App\Http\Controllers\AuthController;
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('user', function (Request $request) { return $request->user(); });
+    Route::get('user', function (Request $request) { 
+        $user = $request->user();
+        $user->role = $user->getRoleNames()->first();
+        return $user; 
+    });
     Route::get('user/role', function (Request $request) { 
         return $request->user()->getRoleNames()->first();
     });
@@ -54,6 +58,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         // ACCOUNT ROUTES
         Route::put('accounts/{id}', [AccountController::class, 'update']);
+        Route::delete('accounts/{id}', [AccountController::class, 'destroy']);
 
         // RECEIVABLE ROUTES
         Route::get('receivables', [ReceivableController::class, 'index']); // TODO

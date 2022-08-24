@@ -22,7 +22,10 @@ class StatusSeeder extends Seeder
             ['name' => 'Acknowledged'],
             ['name' => 'Rejected'],
             ['name' => 'Cancelled'],
-            ['name' => 'Completed']
+            ['name' => 'Completed'],
+            ['name' => 'New'], // for loaners who are at their first loan
+            ['name' => 'Active'],
+            ['name' => 'Deactivated']
         ];
         foreach ($statuses as $status) {
             Status::create($status);

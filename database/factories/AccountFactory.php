@@ -20,10 +20,9 @@ class AccountFactory extends Factory
             'name' => $this->faker->name,
             'address' => $this->faker->address,
             'phone' => $this->faker->phoneNumber,
-            'user_id' => $this->faker->numberBetween(1, 10),
+            'user_id' => $this->faker->numberBetween(1, 4),
             'company_id' => $this->faker->numberBetween(1, 10),
-            'balance' => $this->faker->numberBetween(100, 1000),
-            // 'capital' => $this->faker->numberBetween(100, 1000),
+            'balance' => $this->faker->numberBetween(100, 5000),
         ];
     }
 }

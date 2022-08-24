@@ -23,13 +23,8 @@ const Login = () => {
                 if (userRes.status === 200) {
                     usePageStore.setState({
                         isLoggedIn: true,
-                        user: userRes.data
-                    })
-                } else console.log(userRes.data)
-                const roleRes = await http.get('/api/user/role');
-                if (roleRes.status === 200) {
-                    usePageStore.setState({
-                        role: roleRes.data
+                        user: userRes.data,
+                        role: userRes.data.role
                     })
                 } else console.log(userRes.data)
                 navigate('/')

@@ -39,7 +39,7 @@ class LoanController_Employee extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'amount' => 'required|numeric',
             'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
@@ -47,11 +47,8 @@ class LoanController_Employee extends Controller
             // 'total_interest_rate' => 'required|numeric|between:0,100',
             'account_id' => 'required|numeric|exists:accounts,id',
         ]);
-        $dataToSave = $request->all();
-        $dataToSave['company_id'] = auth()->user()->account->company_id;
-        $loan = $request->user()->account->loans()->create($dataToSave);
+        $loan = $request->user()->account->loans()->create($validatedData);
         $loan->setStatus('Pending');
-        $loan->save();
         return response()->json('Loan Application sent!', 201);
     }
 

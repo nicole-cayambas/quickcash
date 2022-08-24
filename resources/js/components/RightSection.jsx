@@ -62,7 +62,8 @@ const OwnerRoutes = () => {
         <Route path="/companies" element={<Companies />} />
         <Route path="/payroll_officers" element={<PayrollOfficers />} />
         <Route path="/administrators" element={<Administrators />} />
-        <Route path="/Accounts" element={<Accounts />} />
+        <Route path="/accounts" element={<Accounts />} />
+        <Route path="/accounts/create" element={<CreateAccount />} />
         <Route path="/loans" element={<Loans />} />
         <Route path="/loans/create" element={<CreateLoan />} />
     </Routes>

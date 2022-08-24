@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react"
 import http from "../http"
 import { usePageStore } from "../stateman"
 
-import { Typography, Stack, Card, CardContent, TextField, Button, Box, Alert, FormControl, Select, InputLabel, MenuItem } from '@mui/material'
+import { Typography, Stack, Card, CardContent, TextField, Button, Box, Alert, FormControl, Select, InputLabel, MenuItem, Autocomplete } from '@mui/material'
 import StatusSelector from "../StatusSelector"
 
 import moment from "moment"
 
 const CreateLoan = () => {
     const { role, user } = usePageStore()
-    const [account, setAccount] = useState(0)
+    const [accountID, setAccountID] = useState(0)
     const [accounts, setAccounts] = useState([])
+    const [accountNames, setAccountNames] = useState([])
     const [amount, setAmount] = useState(null)
     const [loanDate, setLoanDate] = useState(null)
     const [monthly, setMonthly] = useState(0)
@@ -30,16 +31,20 @@ const CreateLoan = () => {
         getAccount()
     }, [])
 
+    useEffect(()=> {
+        setAccountNames(accounts.map(account => account.name))
+    }, [accounts])
+
     const getAccount = async() => {
         if(role==="Employee"){
-            const accountres = await http.get('/api/user/account')
-            if(account.status == 200){
-                setAccount(accountres.data.id)
+            const res = await http.get('/api/user/account')
+            if(res.status == 200){
+                setAccountID(res.data.id)
             }
         } else {
-            const accountsres = await http.get('api/accounts')
-            if(accountsres.status == 200){
-                setAccount(accountsres.data)
+            const res = await http.get('api/accounts')
+            if(res.status == 200){
+                setAccounts(res.data)
             }
         }
     }
@@ -68,13 +73,14 @@ const CreateLoan = () => {
         } else e.target.value = ''
     }
 
-    const changeAccount = (e) => {
-        setAccountName(e.target.value)
+    const selectAccount = (value) => {
+        const i = accountNames.indexOf(value)
+        if(accounts[i]!==undefined) setAccountID(accounts[i].id)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const account_id = account !== 0 ? account : user.account_id
+        const account_id = accountID !== 0 ? accountID : user.account_id
         const request = {
             amount: amount,
             interest_rate: interestRate,
@@ -82,7 +88,7 @@ const CreateLoan = () => {
             amortizations: amortizations,
             percentage: percentage,
             account_id: account_id,
-            status: status
+            status: status,
         }
 
         if (role === 'Employee') http.post('/api/employee/loans', request).then((res) => {
@@ -94,6 +100,8 @@ const CreateLoan = () => {
         else if(role==='Owner' || role==='Administrator') http.post('/api/loans', request).then((res) => {
             setMessage(res.data)
         }).catch((err) => {setMessage(err.response.data.message)})
+
+        setAccountID(0)
     }
 
     return (
@@ -103,7 +111,13 @@ const CreateLoan = () => {
                 <Stack spacing="20px">
                     <Typography variant="h5">{ role==="Employee" ? "Apply For a Loan" : "Create Loan" }</Typography>
                     {message ? <Alert severity="info">{message}</Alert> : null}
-                    { role!=="Employee" ? <TextField required id="account" label="Account Name" name="account" onChange={changeAccount}/> : null }
+                    { role!=="Employee" ? <Autocomplete
+                        onSelect={(e)=>{selectAccount(e.target.value)}}
+                        required
+                        options={accountNames}
+                        fullWidth
+                        renderInput={(params) => <TextField {...params} label="Accounts" />}
+                    /> : null }
                     <TextField required id="amount" label="Amount" name="amount" onChange={changeAmount}/>
                     <TextField type={'date'} required helperText="Loan Date" id="loan_date" name="loan_date" onChange={(e)=>{setLoanDate(e.target.value)}}/>
                     <StatusSelector role={role} onChangeFn={(e) => {setStatus(e.target.value)}} status={status} cta="Status"/>

@@ -17,8 +17,6 @@ class Loan extends Model
         'loan_date',
         'amortizations',
         'percentage',
-        // 'total_interest_rate',
-        // 'company_id',
         'account_id'
     ];
 

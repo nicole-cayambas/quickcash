@@ -23,6 +23,7 @@ class LoanController_Payroll extends Controller
         $loans = Loan::whereIn('account_id', $accountIDs)->get();
         foreach($loans as $loan){
             $loan['status'] = $loan->status();
+            $loan['account'] = Account::findOrFail($loan->account_id);
         }
         return response()->json($loans, 200);
     }
@@ -40,14 +41,15 @@ class LoanController_Payroll extends Controller
             'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
-            // 'total_interest_rate' => 'required|numeric|between:0,100',
             'account_id' => 'required|numeric|exists:accounts,id',
             'status' => 'string|exists:statuses,name',
         ]);
+        $user = auth()->user();
         if(!$request->status_desc){
             $validatedData['status_desc'] = null;
         }
-        $account = auth()->user()->company->accounts()->findOrFail($validatedData['account_id']);
+        $validatedData['company_id'] = $user->company->id;
+        $account = $user->company->accounts()->findOrFail($validatedData['account_id']);
         $loan = $account->loans()->create($validatedData);
         if($request->status) {
             $loan->setStatus($validatedData['status'], $validatedData['status_desc']);
@@ -65,7 +67,10 @@ class LoanController_Payroll extends Controller
     {
         $loan = Loan::findOrFai($id);
         $account = auth()->user()->company->accounts()->findOrFail($loan->account_id);
-        if($account) return response()->json($loan, 200);
+        if($account) {
+            $loan['account'] = Account::findOrFail($loan->account_id);
+            return response()->json($loan, 200);
+        }
         return response()->json('No permission to view loan.');
     }
 

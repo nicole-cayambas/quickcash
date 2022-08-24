@@ -19,11 +19,13 @@ class AccountController extends Controller
             $accounts = auth()->user()->company->accounts()->get();
             foreach($accounts as $account){
                 $account['company_name'] = auth()->user()->company->name;
+                if($account->status()) $account['status'] = $account->status();
             }
         } else {
             $accounts = Account::all();
             foreach($accounts as $account){
                 $account['company_name'] = Company::find($account->company_id)->name;
+                if($account->status()) $account['status'] = $account->status();
             }
         }
         return response()->json($accounts, 200);
@@ -108,6 +110,7 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Account::findOrFail($id)->delete();
+        return response()->json('Deleted successfully.', 202);
     }
 }

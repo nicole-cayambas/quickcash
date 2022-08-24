@@ -43,7 +43,7 @@ const CreateAccount = () => {
             address: address,
             phone: phone
         }
-        
+        console.log(request)
         if(role==="Employee"){
             http.post('api/account/apply', request).then((res)=> {
                 setMessage(res.data)
@@ -66,7 +66,8 @@ const CreateAccount = () => {
                         fullWidth
                         renderInput={(params) => <TextField {...params} label="Available Companies" />}
                     />
-                    <TextField label="Account Name" name="account_name" value={user.first_name + ' ' + user.last_name} disabled/>
+                    { role==="Employee" ? <TextField label="Account Name" name="account_name" value={user.first_name + ' ' + user.last_name} disabled/> 
+                    : <TextField label="Account Name" name="account_name"/> }
                     <TextField label="Address" name="address" required onChange={(e) => {setAddress(e.target.value)}}/>
                     <TextField label="Phone" name="phone" required onChange={(e)=> {setPhone(e.target.value)}}/>
                     <Button fullWidth variant={"contained"} size="large" type={"submit"} > Submit </Button>

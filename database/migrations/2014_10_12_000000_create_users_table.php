@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->foreignId('company_id')->nullable()->constrained('companies');
+            $table->foreignId('company_id')->nullable()->constrained('companies'); //for payroll officers
             $table->foreignId('account_id')->nullable()->constrained('accounts');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

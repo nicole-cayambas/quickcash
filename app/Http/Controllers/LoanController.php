@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Loan;
+use App\Models\Account;
+use App\Models\Company;
 
 
 class LoanController extends Controller
@@ -18,8 +20,9 @@ class LoanController extends Controller
         $loans = Loan::all();
         foreach($loans as $loan){
             $loan['status'] = $loan->status();
+            $loan['account'] = Account::findOrFail($loan->account_id);
+            if($loan->account) $loan['company'] = Company::findOrFail($loan->account->company_id);
         }
-        
         return response()->json($loans, 200);
     }
 
@@ -59,6 +62,8 @@ class LoanController extends Controller
     {
         $loan = Loan::findOrFail($id);
         $loan['status'] = $loan->status();
+        $loan['account'] = Account::findOrFail($loan->account_id);
+        $loan['company'] = Company::findOrFail($loan['account']->company_id);
         return response()->json($loan, 200);
     }
 

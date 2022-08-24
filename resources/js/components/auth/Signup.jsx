@@ -17,19 +17,14 @@ const Signup = () => {
         const register = await http.post('/api/register', creds)
         if(register.status===200){
             const userRes = await http.get('/api/user');
-                if (userRes.status === 200) {
-                    usePageStore.setState({
-                        isLoggedIn: true,
-                        user: userRes.data
-                    })
-                } else console.log(userRes.data)
-                const roleRes = await http.get('/api/user/role');
-                if (roleRes.status === 200) {
-                    usePageStore.setState({
-                        role: roleRes.data
-                    })
-                } else console.log(userRes.data)
-                navigate('/')
+            if (userRes.status === 200) {
+                usePageStore.setState({
+                    isLoggedIn: true,
+                    user: userRes.data,
+                    role: userRes.data.role
+                })
+            } else console.log(userRes.data)
+            navigate('/')
         } else console.log(register)
     }
 
