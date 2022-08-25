@@ -88,19 +88,18 @@ class LoanController_Payroll extends Controller
             'loan_date' => 'sometimes|required|date|after:yesterday',
             'amortizations' => 'sometimes|required|numeric',
             'percentage' => 'sometimes|required|numeric|between:0,100',
-            // 'total_interest_rate' => 'sometimes|required|numeric|between:0,100',
-            'account_id' => 'sometimes|required|numeric|exists:accounts,id',
-            'status' => 'string|exists:statuses,name'
+            'account_id' => 'sometimes|required|exists:accounts,id',
+            'status' => 'string|exists:statuses,name',
         ]);
         if(!$request->status_desc){
             $validatedData['status_desc'] = null;
+            $validatedData['account_id'] =4;
         }
-        $loan = auth()->user()->company->loans()->findOrFail($id);
-        $loan->update($validatedData);
-        if($request->status) {
+        $loan = Loan::findOrFail($id);
+        if($request->status){
             $loan->setStatus($validatedData['status'], $validatedData['status_desc']);
         }
-        $loan->save();
+        $loan->update($validatedData);
         return response()->json('Loan Updated!', 204);
     }
 }

@@ -20,7 +20,9 @@ import Signup from './auth/Signup';
 
 const RightSection = () => {
     const { isLoggedIn, user, role } = usePageStore()
-
+    useEffect(()=> {
+        
+    }, [])
 
     if(!isLoggedIn) {
         return <BoxComponent child={<LoggedOutRoutes />} />

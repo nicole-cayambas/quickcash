@@ -23,6 +23,7 @@ class LoanController_Employee extends Controller
             if($loans){
                 foreach($loans as $loan){
                     $loan['status'] = $loan->status();
+                    $loan['account'] = $account;
                 }
                 return response()->json($loans, 200);
             } else return response()->json('No loans on account.');
@@ -44,7 +45,6 @@ class LoanController_Employee extends Controller
             'loan_date' => 'required|date|after:yesterday',
             'amortizations' => 'required|numeric',
             'percentage' => 'required|numeric|between:0,100',
-            // 'total_interest_rate' => 'required|numeric|between:0,100',
             'account_id' => 'required|numeric|exists:accounts,id',
         ]);
         $loan = $request->user()->account->loans()->create($validatedData);

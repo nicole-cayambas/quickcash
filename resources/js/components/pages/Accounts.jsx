@@ -87,6 +87,9 @@ const Accounts = () => {
         })
         getAccounts()
     }, [])
+    useEffect(() => {
+        getAccounts()
+    }, [message])
 
     return (
         <Box sx={{ height: '80vh', width: '100%' }}>
@@ -98,6 +101,7 @@ const Accounts = () => {
                 pageSize={10}
                 rowsPerPageOptions={[10]}
                 checkboxSelection
+                disableSelectionOnClick
             />
         </Box>
     )

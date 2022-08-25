@@ -110,7 +110,9 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        Account::findOrFail($id)->delete();
+        $account = Account::findOrFail($id);
+        $account->loans()->delete();
+        $account->delete();
         return response()->json('Deleted successfully.', 202);
     }
 }

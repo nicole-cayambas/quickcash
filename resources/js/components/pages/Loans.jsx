@@ -131,7 +131,7 @@ const Loans = () => {
             const request = {
                 status: value
             }
-            if(role!=="Employee"){
+            if(role==="Administrator" || role==="Owner"){
                 http.put(`api/loans/${loan_id}`, request).then((res)=>{
                     setMessage(res.status===204 ? `Loan with ID of ${loan_id} is updated.` : null)
                 })
