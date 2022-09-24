@@ -10,6 +10,7 @@ class Account extends Model
 {
     use HasFactory, HasStatuses;
     
+    protected $table = 'accounts';
 
     protected $fillable = [
         'user_id',

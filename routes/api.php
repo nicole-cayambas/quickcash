@@ -13,6 +13,12 @@ use App\Http\Controllers\ReceivableController;
 use App\Http\Controllers\AuthController;
 
 
+Route::get('test', function(){
+    // return DB::table('loans')->join('accounts', 'accounts.id', '=', 'loans.account_id')->select('loans.*', 'accounts.*')->get();
+    return App\Models\Loan::join('accounts', 'accounts.id', '=', 'loans.account_id')->select('loans.*', 'accounts.*')->get();
+    return 'test';
+});
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('user', function (Request $request) { 
         $user = $request->user();

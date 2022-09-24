@@ -11,6 +11,7 @@ class Loan extends Model
 {
     use HasFactory, HasStatuses;
 
+    protected $table = 'loans';
 
     protected $fillable = [
         'amount',
@@ -19,10 +20,6 @@ class Loan extends Model
         'percentage',
         'account_id'
     ];
-
-    // public function company() {
-    //     return $this->belongsTo(Company::class);
-    // }
 
     public function account() {
         return $this->belongsTo(Account::class);

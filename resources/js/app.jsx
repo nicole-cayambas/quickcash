@@ -20,6 +20,7 @@ const theme = createTheme({
 
 const App = () => {
     const { user, role } = usePageStore()
+    console.log(user);
 
     useEffect(() => {
         getUser()

@@ -34,5 +34,5 @@ Route::get('/confirm/{token}', [AuthController::class, 'verifyEmail']);
 
 Route::any('/{any}', function(){
     return view('main');
-})->where('any', '.*');
+})->where('any', '.*|[^api]');
 

@@ -70,6 +70,8 @@ class AuthController extends Controller
         }
         $response['code'] = 200;
         $response['message'] = 'Login Successful';
+        $response['user'] = auth()->user();
+        $response['role'] = $request->user()->getRoleNames()->first();
         return response()->json($response, 200);
     }
 

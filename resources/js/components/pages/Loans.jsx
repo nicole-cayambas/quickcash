@@ -29,14 +29,12 @@ const Loans = () => {
             {   field: 'account_name', 
                 headerName:'Account',
                 width: 200,
-                renderCell: params => params.row.account.name
             },
             {
                 field: 'company_name',
                 headerName: 'Company',
                 width: 200,
                 hide: role!=="Owner" || role!=="Administrator" ? true : false,
-                renderCell: role==="Owner" || role==="Administrator" ? params => params.row.company.name : null
             },
             {
                 field: 'amount',
@@ -143,14 +141,17 @@ const Loans = () => {
         }
 
         const getLoans = async () => {
-            let loansData
             if(user.account_id !== null){
+                let loansData
                 if (role === 'Employee') loansData = await http.get('/api/employee/loans')
                 else if (role === 'Administrator' || role === "Owner") loansData = await http.get('/api/loans')
                 else if (role === 'Payroll_Officer') {
                     loansData = await http.get('/api/payroll/loans')
                 }
-                setLoans(loansData.data)
+                console.log(loansData.data);
+                if(loansData.statusText == 'OK'){
+                    setLoans(loansData.data)
+                }
             }
         }
 

@@ -18,19 +18,16 @@ const Login = () => {
     if (!isLoggedIn) {
         const attemptLogin = async (creds) => {
             const login = await http.post('/api/login', creds)
-            if(login.status === 200){
-                const userRes = await http.get('/api/user');
-                if (userRes.status === 200) {
-                    usePageStore.setState({
-                        isLoggedIn: true,
-                        user: userRes.data,
-                        role: userRes.data.role
-                    })
-                } else console.log(userRes.data)
+            if (login.statusText === 'OK') {
+                usePageStore.setState({
+                    isLoggedIn: true,
+                    user: login.data.user,
+                    role: login.data.user.roles
+                })
                 navigate('/')
             }
-            
         }
+
 
         const handleSubmit = (e) => {
             e.preventDefault()
